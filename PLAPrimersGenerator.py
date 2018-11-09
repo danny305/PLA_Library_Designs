@@ -49,6 +49,9 @@ from random import choice, seed
 from math import pow, log
 from pprint import pprint
 from time import time
+from collections import namedtuple
+from difflib import SequenceMatcher
+from itertools import combinations
 
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
@@ -259,18 +262,18 @@ def genPrimerPairPool(pool_size=8,length=20,*,GC_low=40, GC_high=60,ext=5, ret_s
     pool = dict()
 
     while len(pool.keys()) <= pool_size:
-        pool['meta_data'] = {'pool_size': pool_size, 'primer_length': length,
+        pool[f'meta_data_{ext}'] = {'pool_size': pool_size, 'primer_length': length,
                              "GC_low": GC_low, "GC_high": GC_high, "extension_end": ext
                              }
-        primerKeyName = "primers " + str(len(pool.keys()))
+        primerNum = str(len(pool.keys()))
+        primerKeyName = f"primers {ext}.{primerNum}"
         primers = dict()
-        primers['forw_primer'], primers['rev_primer'] = \
-                                    genCertPrimerPairs(length=length,GC_low=GC_low,
-                                                       GC_high=GC_high, ext=ext,
-                                                       ret_str=ret_str)
+        primers[f'forw_primer_{ext}.{primerNum}'], primers[f'rev_primer_{ext}.{primerNum}'] = \
+            genCertPrimerPairs(length=length,GC_low=GC_low, GC_high=GC_high, ext=ext, ret_str=ret_str)
 
-        primers['forw_MT'], primers['rev_MT'] = retPrimerPairMT(primers['forw_primer'],
-                                                                primers['rev_primer'])
+        primers[f'forw_MT_{ext}.{primerNum}'], primers[f'rev_MT_{ext}.{primerNum}'] = \
+            retPrimerPairMT(primers[f'forw_primer_{ext}.{primerNum}'], primers[f'rev_primer_{ext}.{primerNum}'])
+
         pool[primerKeyName] = primers
 
 
@@ -314,15 +317,177 @@ stringent in avoiding 3' dimers.
 
 
 def pullAllPrimers(pool_dict=None):
-    pass
+    if pool_dict == None:
+        pool_dict = gen5_3PrimerPairPools(50)
+
+    dict1, dict2 = [ dict for dict in pool_dict.values()]
+    all_primers = {**dict1,**dict2}
+    keys_2_pop = [key for key in all_primers.keys() if re.match('meta.*',key)]
+    for meta_key in keys_2_pop:
+        all_primers.pop(meta_key)
+
+    all_Seq = list()
+    PrimerPair = namedtuple('PrimerPair', ['extension','forw_primer','rev_primer', 'forw_MT','rev_MT'])
+
+    for primer_pair in all_primers.keys():
+        primer = all_primers[primer_pair]
+        if re.search('5\.',list(primer.keys())[0]):
+            ext='5_prime'
+        elif re.search('3\.',list(primer.keys())[0]):
+            ext='3_prime'
+
+        all_Seq.append(PrimerPair(ext,*primer.values()))
+
+    return all_Seq
+
+
+def chkSelfDimerization(all_seq):
+
+    filtered_seq = list()
+    for (index, (_, forwP, revP, *MTs)) in enumerate(all_seq):
+        print(index)
+        forwP,revP = Seq(forwP,generic_dna), Seq(revP,generic_dna)
+        forwP_Rev = forwP[::-1]
+        forwP_Com = forwP.complement()
+        match_ForwP = SequenceMatcher(a=forwP_Rev,b=forwP_Com).find_longest_match(0,len(forwP_Rev),0,len(forwP_Com))
+        match_forwP_block = SequenceMatcher(a=forwP_Rev, b=forwP_Com).get_matching_blocks()
+        print(match_ForwP)
+        print(match_forwP_block)
+        print(forwP_Rev[match_ForwP.a:match_ForwP.a+match_ForwP.size], forwP_Com[match_ForwP.b:match_ForwP.b+match_ForwP.size],sep='\n')
+        print("Forw_Rev: ",forwP_Rev, "Complement: ",forwP.complement(),sep='\n',end='\n\n')
+
+        revP_Rev = revP[::-1]
+        revP_Com = revP.complement()
+        match_RevP = SequenceMatcher(a=revP_Rev, b=revP_Com).find_longest_match(0, len(revP_Rev), 0, len(revP_Com))
+        match_RevP_block = SequenceMatcher(a=revP_Rev, b=revP_Com).get_matching_blocks()
+        print("Reverse Primer")
+        print(match_RevP)
+        print(match_RevP_block)
+        print(revP_Rev[match_RevP.a:match_RevP.a + match_RevP.size], revP_Com[match_RevP.b:match_RevP.b + match_RevP.size], sep='\n')
+        print("RevP_Rev: ", revP_Rev, "Complement: ", revP.complement(), sep='\n', end='\n\n')
+
+        if match_ForwP.size > 3 or match_RevP.size > 3:
+            continue
+        else:
+            print(f'    Adding index: {index}',end='\n\n')
+            filtered_seq.append(all_seq[index])
+
+    print(filtered_seq)
+    print(len(filtered_seq),end='\n\n')
+    return filtered_seq
+
+
+def seqCombinations(all_seq):
+    print(250*"_")
+    all_combs = combinations(all_seq,2)
+    for (index,(pair1, pair2)) in enumerate(all_combs):
+        _, pair1_forwP, pair1_revP, *MTs = pair1
+        _, pair2_forwP, pair2_revP, *MTs = pair2
+
+        pair1_forwP, pair1_revP = Seq(pair1_forwP, generic_dna), Seq(pair1_revP, generic_dna)
+        pair2_forwP, pair2_revP = Seq(pair2_forwP, generic_dna), Seq(pair2_revP, generic_dna)
+
+        pair1_forwP_Com, pair1_revP_Com = pair1_forwP.complement(), pair1_revP.complement()
+        pair2_forwP_Rev, pair2_revP_Rev = pair2_forwP[::-1], pair2_revP[::-1]
+
+
+        """ Pair1_Forward Primer Being compared to Pair2_Forward Primer"""
+
+        match_both_ForwP = SequenceMatcher(a=pair1_forwP_Com, b=pair2_forwP_Rev).find_longest_match(0, len(pair2_forwP_Rev), 0, len(pair1_forwP_Com))
+        match_both_forwP_block = SequenceMatcher(a=pair1_forwP_Com, b=pair2_forwP_Rev).get_matching_blocks()
+
+        print(index)
+        print(match_both_ForwP)
+        print(match_both_forwP_block)
+        print(pair2_forwP_Rev[match_both_ForwP.b:match_both_ForwP.b + match_both_ForwP.size],
+              pair1_forwP_Com[match_both_ForwP.a:match_both_ForwP.a + match_both_ForwP.size], sep='\n')
+        print("Pair2_ForwP_Rev: ", pair2_forwP_Rev, "Pair1_ForwP_Complement: ", pair1_forwP_Com, sep='\n', end='\n\n')
+
+
+
+
+        """ Pair1_Forward Primer Being compared to Pair2_Reverse Primer"""
+
+        match_P1ForwP_P2Rev = SequenceMatcher(a=pair1_forwP_Com, b=pair2_revP_Rev).find_longest_match(0, len(
+            pair2_revP_Rev), 0, len(pair1_forwP_Com))
+        match_P1ForwP_P2Rev_block = SequenceMatcher(a=pair1_forwP_Com, b=pair2_revP_Rev).get_matching_blocks()
+
+        print(match_P1ForwP_P2Rev)
+        print(match_P1ForwP_P2Rev_block)
+        print(pair2_revP_Rev[match_P1ForwP_P2Rev.b:match_P1ForwP_P2Rev.b + match_P1ForwP_P2Rev.size],
+              pair1_forwP_Com[match_P1ForwP_P2Rev.a:match_P1ForwP_P2Rev.a + match_P1ForwP_P2Rev.size], sep='\n')
+        print("Pair2_RevP_Rev: ", pair2_revP_Rev, "Pair1_ForwP_Complement: ", pair1_forwP_Com, sep='\n', end='\n\n')
+
+
+
+
+
+        """ Pair1_Reverse Primer Being compared to Pair2_Forward Primer"""
+
+        match_P1RevP_P2ForwP = SequenceMatcher(a=pair1_revP_Com, b=pair2_forwP_Rev).find_longest_match(0, len(
+            pair2_forwP_Rev), 0, len(pair1_revP_Com))
+        match_P1RevP_P2Forw_block = SequenceMatcher(a=pair1_revP_Com, b=pair2_forwP_Rev).get_matching_blocks()
+
+        print(match_P1RevP_P2ForwP)
+        print(match_P1RevP_P2Forw_block)
+        print(pair2_forwP_Rev[match_P1RevP_P2ForwP.b:match_P1RevP_P2ForwP.b + match_P1RevP_P2ForwP.size],
+              pair1_revP_Com[match_P1RevP_P2ForwP.a:match_P1RevP_P2ForwP.a + match_P1RevP_P2ForwP.size], sep='\n')
+        print("Pair2_forwP_Rev: ", pair2_forwP_Rev, "Pair1_RevP_Complement: ", pair1_revP_Com, sep='\n', end='\n\n')
+
+
+
+
+
+
+        """ Pair1_Reverse Primer Being compared to Pair2_Reverse Primer"""
+
+        match_P1RevP_P2RevP = SequenceMatcher(a=pair1_revP_Com, b=pair2_revP_Rev).find_longest_match(0, len(
+            pair2_revP_Rev), 0, len(pair1_revP_Com))
+        match_P1RevP_P2Rev_block = SequenceMatcher(a=pair1_revP_Com, b=pair2_revP_Rev).get_matching_blocks()
+
+        print(match_P1RevP_P2RevP)
+        print(match_P1RevP_P2Rev_block)
+        print(pair2_revP_Rev[match_P1RevP_P2RevP.b:match_P1RevP_P2RevP.b + match_P1RevP_P2RevP.size],
+              pair1_revP_Com[match_P1RevP_P2RevP.a:match_P1RevP_P2RevP.a + match_P1RevP_P2RevP.size], sep='\n')
+        print("Pair2_RevP_Rev: ", pair2_revP_Rev, "Pair1_RevP_Complement: ", pair1_revP_Com, sep='\n', end='\n\n')
+
+        """
+        match_both_ForwP
+        match_P1ForwP_P2Rev
+        match_P1RevP_P2ForwP
+        match_P1RevP_P2RevP
+        """
+        #ToDo These need to be compared and need to decide how to discard and keep the correct primers
+
+
+        # if match_ForwP.size > 3 or match_RevP.size > 3:
+        #     continue
+        # else:
+        #     print(f'    Adding index: {index}',end='\n\n')
+        #     filtered_seq.append(all_seq[index])
+
+
+
+
+
+
+        #print(pair1, pair2, sep="-----")
+
+
+
+
 
 
 
 
 
 def main():
-    #gen5_3PrimerPairPools()
-    pullAllPrimers()
+    # mast_dict = gen5_3PrimerPairPools()
+    # convMastPool2File(mast_dict,filename="test", fext='txt')
+    all_seq =pullAllPrimers()
+    filt_seq = chkSelfDimerization(all_seq)
+    seqCombinations(filt_seq)
+
 
 
 if __name__=="__main__":
