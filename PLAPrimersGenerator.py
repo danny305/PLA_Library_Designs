@@ -506,7 +506,7 @@ def convNamedTuple2Dict(namedtuples):
 
 
 
-def exportOrthoPrimerTuples(ortho_primers,*,filename,fext='json'):
+def exportPrimerTuples(ortho_primers,*,filename,fext='json'):
     now = datetime.now().strftime("%m-%d-%y_%H:%M")
     with open(f"{filename}-{now}.{fext}",'w+') as f:
         json.dump(ortho_primers, f, indent=4,sort_keys=True)
@@ -541,7 +541,7 @@ def retFormattedSeq(seq,rand_reg_len=15):
     return ret_list
 
 
-def retLigatedSeqData(*,filename,five_prime,three_prime):
+def retLigatedSeqData(*,filename,five_prime,three_prime, ret_dict=True):
     five_prime= 'Pair_'+ str(five_prime); three_prime = "Pair_" + str(three_prime)
     SeqData = namedtuple('LigSeqData', ['pair_num_5', 'pair_num_3', 'template','forw_primer', 'rev_primer',
                                              'sequence','oligo_bridge'])
@@ -567,9 +567,16 @@ def retLigatedSeqData(*,filename,five_prime,three_prime):
     oligo_bridge= ligated_extensions.reverse_complement()[5:15]
     oligo_bridge_var = oligo_bridge[:5] + "-" + oligo_bridge[5:]
 
-    pprint(SeqData(five_prime_data['pair_num'], three_prime_data['pair_num'], five_prime_data['template'],
+    final_data = SeqData(five_prime_data['pair_num'], three_prime_data['pair_num'], five_prime_data['template'],
                    five_prime_data['forw_primer'], three_prime_data['rev_primer'],
-                   ligated_sequence, oligo_bridge_var))
+                   ligated_sequence, str(oligo_bridge_var))
+    if ret_dict:
+        return final_data._asdict()
+    else:
+        return final_data
+
+
+
 
 
 
@@ -604,14 +611,16 @@ def main():
     # print(f'Round: {rounds}')
     # pprint(f'Number of Orthogonal Primers: {len(ortho_pairs)}')
     # ortho_pairs_dict = convNamedTuple2Dict(ortho_pairs)
-    # exportOrthoPrimerTuples(ortho_pairs_dict,filename='OrthoPairs', fext='txt')
+    # exportPrimerTuples(ortho_pairs_dict,filename='OrthoPairs', fext='txt')
 
     # primer_list = grabPrimersFromFile('OrthoPairs-11-09-18_13:00.json')
     # sequences = retFormattedSeq(primer_list)
     # final_seq_dict = convNamedTuple2Dict(sequences)
-    # exportOrthoPrimerTuples(final_seq_dict, filename='FinalSequences', fext='txt')
+    # exportPrimerTuples(final_seq_dict, filename='FinalSequences', fext='txt')
 
-    retLigatedSeqData(filename='FinalSequences-11-13-18_23:14.txt',five_prime=10,three_prime=1)
+    # final_seq_data = retLigatedSeqData(filename='FinalSequences-11-13-18_23:14.txt',five_prime=10,three_prime=1)
+    # exportPrimerTuples(final_seq_data,filename='N15_PLA_Seq', fext='txt')
+
 
 
 
