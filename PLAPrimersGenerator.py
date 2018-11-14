@@ -45,7 +45,7 @@ should not contain regions of 4 or more consecutive G residues.
 
 """
 
-from random import choice, seed
+from numpy.random import choice, seed
 from math import pow, log
 from pprint import pprint
 from time import time
@@ -97,7 +97,7 @@ def chkGC_content(sequence=Seq('GAGACCTT',generic_dna)):
 
 def GenOligoGC(length=25, GC_low=40, GC_high=60):
     generate = True
-    seed(time())
+    #seed(int(time()))
     while generate == True:
         seq = randSeqGen(length)
         GC_content = GCpercent(seq)
@@ -205,8 +205,8 @@ def evalPrimerPairMT(fprimer, rprimer, ret_mt=False):
     fprimer_MT = MT.Tm_GC(fprimer, Na=50, Mg=3, dNTPs=0.8)
     rprimer_MT = MT.Tm_GC(rprimer, Na=50, Mg=3, dNTPs=0.8)
 
-    fprimer_MT_NN = MT.Tm_NN(fprimer, Na=50, Mg=3, dNTPs=0.8)
-    rprimer_MT_NN = MT.Tm_NN(fprimer, Na=50, Mg=3, dNTPs=0.8)
+    fprimer_MT_NN = MT.Tm_NN(fprimer, Na=50, Mg=3, dNTPs=0.8, saltcorr=7)
+    rprimer_MT_NN = MT.Tm_NN(fprimer, Na=50, Mg=3, dNTPs=0.8, saltcorr=7)
 
 
     print (f"forw primer: {fprimer}\nforw primer MT: {fprimer_MT} {fprimer_MT_NN} \n"
@@ -316,9 +316,9 @@ stringent in avoiding 3' dimers.
 """
 
 
-def pullAllPrimers(pool_dict=None):
+def NameTupleAllPrimers(pool_dict=None):
     if pool_dict == None:
-        pool_dict = gen5_3PrimerPairPools(50)
+        pool_dict = gen5_3PrimerPairPools(500)
 
     dict1, dict2 = [ dict for dict in pool_dict.values()]
     all_primers = {**dict1,**dict2}
@@ -345,15 +345,22 @@ def chkSelfDimerization(all_seq):
 
     filtered_seq = list()
     for (index, (_, forwP, revP, *MTs)) in enumerate(all_seq):
-        print(index)
+
         forwP,revP = Seq(forwP,generic_dna), Seq(revP,generic_dna)
         forwP_Rev = forwP[::-1]
         forwP_Com = forwP.complement()
+
+        print(index)
+        print(f"Forward Primer: {forwP.tostring()}")
+        print(f"Reverse Primer: {revP.tostring()}")
+
         match_ForwP = SequenceMatcher(a=forwP_Rev,b=forwP_Com).find_longest_match(0,len(forwP_Rev),0,len(forwP_Com))
         match_forwP_block = SequenceMatcher(a=forwP_Rev, b=forwP_Com).get_matching_blocks()
+
         print(match_ForwP)
         print(match_forwP_block)
-        print(forwP_Rev[match_ForwP.a:match_ForwP.a+match_ForwP.size], forwP_Com[match_ForwP.b:match_ForwP.b+match_ForwP.size],sep='\n')
+        print(forwP_Rev[match_ForwP.a:match_ForwP.a+match_ForwP.size], \
+              forwP_Com[match_ForwP.b:match_ForwP.b+match_ForwP.size],sep='\n')
         print("Forw_Rev: ",forwP_Rev, "Complement: ",forwP.complement(),sep='\n',end='\n\n')
 
         revP_Rev = revP[::-1]
@@ -363,7 +370,8 @@ def chkSelfDimerization(all_seq):
         print("Reverse Primer")
         print(match_RevP)
         print(match_RevP_block)
-        print(revP_Rev[match_RevP.a:match_RevP.a + match_RevP.size], revP_Com[match_RevP.b:match_RevP.b + match_RevP.size], sep='\n')
+        print(revP_Rev[match_RevP.a:match_RevP.a + match_RevP.size], \
+              revP_Com[match_RevP.b:match_RevP.b + match_RevP.size], sep='\n')
         print("RevP_Rev: ", revP_Rev, "Complement: ", revP.complement(), sep='\n', end='\n\n')
 
         if match_ForwP.size > 3 or match_RevP.size > 3:
@@ -377,10 +385,14 @@ def chkSelfDimerization(all_seq):
     return filtered_seq
 
 
-def seqCombinations(all_seq):
+def seqCombinations(all_seq,len_output_seq=0,round=1):
     print(250*"_")
     all_combs = combinations(all_seq,2)
+    filtered_sequences = list()
+    filt_seq_meta_data =list()
     for (index,(pair1, pair2)) in enumerate(all_combs):
+        print(index)
+        print("Pair1: ",pair1,"\nPair2: ",pair2)
         _, pair1_forwP, pair1_revP, *MTs = pair1
         _, pair2_forwP, pair2_revP, *MTs = pair2
 
@@ -393,14 +405,15 @@ def seqCombinations(all_seq):
 
         """ Pair1_Forward Primer Being compared to Pair2_Forward Primer"""
 
-        match_both_ForwP = SequenceMatcher(a=pair1_forwP_Com, b=pair2_forwP_Rev).find_longest_match(0, len(pair2_forwP_Rev), 0, len(pair1_forwP_Com))
-        match_both_forwP_block = SequenceMatcher(a=pair1_forwP_Com, b=pair2_forwP_Rev).get_matching_blocks()
+        match_P1ForwP_P2ForwP = SequenceMatcher(a=pair1_forwP_Com, b=pair2_forwP_Rev).\
+                    find_longest_match(0, len(pair2_forwP_Rev), 0, len(pair1_forwP_Com))
+        match_P1ForwP_P2ForwP_block = SequenceMatcher(a=pair1_forwP_Com, b=pair2_forwP_Rev).get_matching_blocks()
 
-        print(index)
-        print(match_both_ForwP)
-        print(match_both_forwP_block)
-        print(pair2_forwP_Rev[match_both_ForwP.b:match_both_ForwP.b + match_both_ForwP.size],
-              pair1_forwP_Com[match_both_ForwP.a:match_both_ForwP.a + match_both_ForwP.size], sep='\n')
+
+        print(match_P1ForwP_P2ForwP)
+        print(match_P1ForwP_P2ForwP_block)
+        print(pair2_forwP_Rev[match_P1ForwP_P2ForwP.b:match_P1ForwP_P2ForwP.b + match_P1ForwP_P2ForwP.size],
+              pair1_forwP_Com[match_P1ForwP_P2ForwP.a:match_P1ForwP_P2ForwP.a + match_P1ForwP_P2ForwP.size], sep='\n')
         print("Pair2_ForwP_Rev: ", pair2_forwP_Rev, "Pair1_ForwP_Complement: ", pair1_forwP_Com, sep='\n', end='\n\n')
 
 
@@ -408,14 +421,14 @@ def seqCombinations(all_seq):
 
         """ Pair1_Forward Primer Being compared to Pair2_Reverse Primer"""
 
-        match_P1ForwP_P2Rev = SequenceMatcher(a=pair1_forwP_Com, b=pair2_revP_Rev).find_longest_match(0, len(
+        match_P1ForwP_P2RevP = SequenceMatcher(a=pair1_forwP_Com, b=pair2_revP_Rev).find_longest_match(0, len(
             pair2_revP_Rev), 0, len(pair1_forwP_Com))
-        match_P1ForwP_P2Rev_block = SequenceMatcher(a=pair1_forwP_Com, b=pair2_revP_Rev).get_matching_blocks()
+        match_P1ForwP_P2RevP_block = SequenceMatcher(a=pair1_forwP_Com, b=pair2_revP_Rev).get_matching_blocks()
 
-        print(match_P1ForwP_P2Rev)
-        print(match_P1ForwP_P2Rev_block)
-        print(pair2_revP_Rev[match_P1ForwP_P2Rev.b:match_P1ForwP_P2Rev.b + match_P1ForwP_P2Rev.size],
-              pair1_forwP_Com[match_P1ForwP_P2Rev.a:match_P1ForwP_P2Rev.a + match_P1ForwP_P2Rev.size], sep='\n')
+        print(match_P1ForwP_P2RevP)
+        print(match_P1ForwP_P2RevP_block)
+        print(pair2_revP_Rev[match_P1ForwP_P2RevP.b:match_P1ForwP_P2RevP.b + match_P1ForwP_P2RevP.size],
+              pair1_forwP_Com[match_P1ForwP_P2RevP.a:match_P1ForwP_P2RevP.a + match_P1ForwP_P2RevP.size], sep='\n')
         print("Pair2_RevP_Rev: ", pair2_revP_Rev, "Pair1_ForwP_Complement: ", pair1_forwP_Com, sep='\n', end='\n\n')
 
 
@@ -452,41 +465,153 @@ def seqCombinations(all_seq):
         print("Pair2_RevP_Rev: ", pair2_revP_Rev, "Pair1_RevP_Complement: ", pair1_revP_Com, sep='\n', end='\n\n')
 
         """
-        match_both_ForwP
-        match_P1ForwP_P2Rev
+        match_P1ForwP_P2ForwP
+        match_P1ForwP_P2RevP
         match_P1RevP_P2ForwP
         match_P1RevP_P2RevP
         """
+
+        all_match_obj = [match_P1ForwP_P2ForwP, match_P1ForwP_P2RevP, match_P1RevP_P2ForwP, match_P1RevP_P2RevP]
         #ToDo These need to be compared and need to decide how to discard and keep the correct primers
+        match_size_list = [match.size for match in all_match_obj]
+
+        print(f"The maximum match size in the 4 comparisons was: {max(match_size_list)}\n\n\n")
+        print(150*"#", end="\n\n")
+
+        if max(match_size_list) < 6:
+            if pair1 not in filtered_sequences:
+                filtered_sequences.append(pair1)
+            if pair2 not in filtered_sequences:
+                filtered_sequences.append(pair2)
+        else:
+            if pair1 in filtered_sequences:
+                filtered_sequences.remove(pair1)
+            if pair2 in filtered_sequences:
+                filtered_sequences.remove(pair2)
+
+    len_filtered_seq = len(filtered_sequences)
+    if len_filtered_seq == len_output_seq and len_filtered_seq != 0:
+        return filtered_sequences,round
+    else:
+        return seqCombinations(filtered_sequences,len_output_seq=len_filtered_seq,round=round+1)
 
 
-        # if match_ForwP.size > 3 or match_RevP.size > 3:
-        #     continue
-        # else:
-        #     print(f'    Adding index: {index}',end='\n\n')
-        #     filtered_seq.append(all_seq[index])
+
+def convNamedTuple2Dict(namedtuples):
+    ret_dict = dict()
+    for index, ntuple in enumerate(namedtuples):
+        ret_dict[f'Pair_{index + 1}'] = ntuple._asdict()
+
+    return ret_dict
+
+
+
+def exportOrthoPrimerTuples(ortho_primers,*,filename,fext='json'):
+    now = datetime.now().strftime("%m-%d-%y_%H:%M")
+    with open(f"{filename}-{now}.{fext}",'w+') as f:
+        json.dump(ortho_primers, f, indent=4,sort_keys=True)
+    print('created file')
+
+
+def grabPrimersFromFile(filename):
+    chosen_3_pairs = ['Pair_2', 'Pair_12', 'Pair_36', 'Pair_39', 'Pair_45']
+    chosen_5_pairs = ['Pair_14', 'Pair_17', 'Pair_19', 'Pair_29', 'Pair_35']
+    chosen_primers = list()
+    with open(filename, 'r') as f:
+        file = json.load(f)
+        PrimerPairs = namedtuple('PrimerPair',['pair_num','extension','forw_primer','forw_MT', 'rev_primer','rev_MT'])
+        for index,(three_prime, five_prime) in enumerate(zip(chosen_3_pairs,chosen_5_pairs)):
+            chosen_primers.append(PrimerPairs(three_prime,**file[three_prime]))
+            chosen_primers.append(PrimerPairs(five_prime,**file[five_prime]))
+
+    return chosen_primers
+
+
+def retFormattedSeq(seq,rand_reg_len=15):
+    ret_list =list()
+    seqTemplate = namedtuple('SeqTemplate',['pair_num','extension','forw_primer','forw_MT', 'rev_primer','rev_MT',
+                                             'template','sequence'])
+    for primer_pair in seq:
+        forw_primer = Seq(primer_pair.forw_primer,alphabet=generic_dna)
+        forwP_template = forw_primer.reverse_complement()
+        seq_template = primer_pair.rev_primer + '-'*rand_reg_len + forwP_template
+        ret_list.append(seqTemplate(*primer_pair,str(forwP_template),str(seq_template)))
+    # pprint(ret_list)
+    # print('\n\n')
+    return ret_list
+
+
+def retLigatedSeqData(*,filename,five_prime,three_prime):
+    five_prime= 'Pair_'+ str(five_prime); three_prime = "Pair_" + str(three_prime)
+    SeqData = namedtuple('LigSeqData', ['pair_num_5', 'pair_num_3', 'template','forw_primer', 'rev_primer',
+                                             'sequence','oligo_bridge'])
+
+    with open(filename,'r') as f:
+        file = json.load(f)
+        five_prime_data = file.get(five_prime)
+        three_prime_data = file.get(three_prime)
+        five_prime_seq = five_prime_data['sequence']
+        three_prime_seq = three_prime_data['sequence']
+
+
+        #return five_prime_data, three_prime_data
+
+        print('five_prime_extension', five_prime_data['sequence'], five_prime_data['sequence'][:5],sep='\t\t')
+        print('three_prime_extension', three_prime_data['sequence'], three_prime_data['sequence'][-5:],sep='\t\t')
+
+    five_prime_extension = five_prime_seq[:10]
+    three_prime_extension = three_prime_seq[-10:]
+    ligated_extensions = three_prime_extension + five_prime_extension
+    ligated_sequence = three_prime_seq + "-" + five_prime_seq
+    ligated_extensions = Seq(ligated_extensions)
+    oligo_bridge= ligated_extensions.reverse_complement()[5:15]
+    oligo_bridge_var = oligo_bridge[:5] + "-" + oligo_bridge[5:]
+
+    pprint(SeqData(five_prime_data['pair_num'], three_prime_data['pair_num'], five_prime_data['template'],
+                   five_prime_data['forw_primer'], three_prime_data['rev_primer'],
+                   ligated_sequence, oligo_bridge_var))
 
 
 
 
 
 
-        #print(pair1, pair2, sep="-----")
+
+
+def genForwPrimerSpacer(length=20):
+    spacer = randSeqGen(length)
 
 
 
 
 
+def spacerOrthogonality():
+    pass
 
 
 
 
 def main():
+    # #genPrimerPairPool()
     # mast_dict = gen5_3PrimerPairPools()
     # convMastPool2File(mast_dict,filename="test", fext='txt')
-    all_seq =pullAllPrimers()
-    filt_seq = chkSelfDimerization(all_seq)
-    seqCombinations(filt_seq)
+    # all_seq =NameTupleAllPrimers()
+    # filt_seq = chkSelfDimerization(all_seq)
+    # # pprint(filt_seq)
+    # ortho_pairs, rounds = seqCombinations(filt_seq)
+    #
+    # pprint(ortho_pairs)
+    # print(f'Round: {rounds}')
+    # pprint(f'Number of Orthogonal Primers: {len(ortho_pairs)}')
+    # ortho_pairs_dict = convNamedTuple2Dict(ortho_pairs)
+    # exportOrthoPrimerTuples(ortho_pairs_dict,filename='OrthoPairs', fext='txt')
+
+    # primer_list = grabPrimersFromFile('OrthoPairs-11-09-18_13:00.json')
+    # sequences = retFormattedSeq(primer_list)
+    # final_seq_dict = convNamedTuple2Dict(sequences)
+    # exportOrthoPrimerTuples(final_seq_dict, filename='FinalSequences', fext='txt')
+
+    retLigatedSeqData(filename='FinalSequences-11-13-18_23:14.txt',five_prime=10,three_prime=1)
 
 
 

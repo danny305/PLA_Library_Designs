@@ -45,6 +45,7 @@ def GenOligoGC(length=25, GC_low=40, GC_high=60):
         if GC_content >= GC_low and GC_content <= GC_high:
             return seq
 
+
 def printNSeq(num_seq=20,seq_len=20,GC_low_cutoff=40,GC_high_cutoff=60):
     uniq_seq = list()
     while len(uniq_seq) < num_seq:
@@ -55,6 +56,7 @@ def printNSeq(num_seq=20,seq_len=20,GC_low_cutoff=40,GC_high_cutoff=60):
         else:
             continue
     pprint(uniq_seq)
+
 
 def main():
     num_uniq_seq = int(input('How many unique sequences do you want to generate:'))
@@ -74,4 +76,3 @@ def main():
 
 if __name__=="__main__":
     #main()
-    printNSeq()
