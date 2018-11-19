@@ -1,0 +1,22 @@
+{
+    "Pair_1": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTCCACAGATTGAAGCACG",
+        "pair_num": "Pair_21",
+        "rev_MT": 62.32,
+        "rev_primer": "GGATGAGAGCAGCAGTTTGG",
+        "sequence": "GGATGAGAGCAGCAGTTTGG---------------CGTGCTTCAATCTGTGGACC",
+        "template": "CGTGCTTCAATCTGTGGACC"
+    },
+    "Pair_2": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGGTCTTCATTAGTGTCTGG",
+        "pair_num": "Pair_24",
+        "rev_MT": 62.32,
+        "rev_primer": "CCGTCCGTTTATGTCACACG",
+        "sequence": "CCGTCCGTTTATGTCACACG---------------CCAGACACTAATGAAGACCC",
+        "template": "CCAGACACTAATGAAGACCC"
+    }
+}

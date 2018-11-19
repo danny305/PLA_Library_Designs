@@ -577,7 +577,22 @@ def retLigatedSeqData(*,filename,five_prime,three_prime, ret_dict=True):
 
 
 
+def genSplintSeq(filename,*,splint_len=20):
+    chosen_3_pairs = ['Pair_2', 'Pair_12', 'Pair_36', 'Pair_39', 'Pair_45']
+    chosen_5_pairs = ['Pair_14', 'Pair_17', 'Pair_19', 'Pair_29', 'Pair_35']
+    chosen_primers = list()
+    with open(filename, 'r') as f:
+        file = json.load(f)
+        for value in file.values():
+            print(value)
 
+
+    #     PrimerPairs = namedtuple('PrimerPair',['pair_num','extension','forw_primer','forw_MT', 'rev_primer','rev_MT'])
+    #     for index,(three_prime, five_prime) in enumerate(zip(chosen_3_pairs,chosen_5_pairs)):
+    #         chosen_primers.append(PrimerPairs(three_prime,**file[three_prime]))
+    #         chosen_primers.append(PrimerPairs(five_prime,**file[five_prime]))
+    #
+    # return chosen_primers
 
 
 
@@ -620,6 +635,7 @@ def main():
 
     # final_seq_data = retLigatedSeqData(filename='FinalSequences-11-13-18_23:14.txt',five_prime=10,three_prime=1)
     # exportPrimerTuples(final_seq_data,filename='N15_PLA_Seq', fext='txt')
+
 
 
 
