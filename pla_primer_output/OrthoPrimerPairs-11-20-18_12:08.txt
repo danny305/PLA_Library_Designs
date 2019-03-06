@@ -1,0 +1,16 @@
+{
+    "Pair_1": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTCGTTGATAAGCAGGTCG",
+        "rev_MT": 64.37,
+        "rev_primer": "GCGACATTGCGAGATACCCG"
+    },
+    "Pair_2": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCTCCCTAAACGCAGTATGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCATTATGGCTACCGATGGG"
+    }
+}

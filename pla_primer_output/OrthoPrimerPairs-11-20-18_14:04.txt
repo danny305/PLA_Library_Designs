@@ -1,0 +1,58 @@
+{
+    "Pair_1": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGACCGAAAGATTGAACACG",
+        "rev_MT": 60.27,
+        "rev_primer": "GCTGAACGCTGTAACTATGG"
+    },
+    "Pair_2": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCTCAGACCAATGGAGATGC",
+        "rev_MT": 60.27,
+        "rev_primer": "GGTGTAAAGTCCACTCTACC"
+    },
+    "Pair_3": {
+        "extension": "3_prime",
+        "forw_MT": 64.37,
+        "forw_primer": "CGACTGAGAGACGGCTATGG",
+        "rev_MT": 64.37,
+        "rev_primer": "GCACACTCTGATGACCCTCG"
+    },
+    "Pair_4": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GCTCTTTGACACTATCCTCG",
+        "rev_MT": 60.27,
+        "rev_primer": "CCACTCACAGACATAGATGG"
+    },
+    "Pair_5": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCTCCTACTGCTATGATTCG",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTTTGTTTGTCCTCGTTGC"
+    },
+    "Pair_6": {
+        "extension": "3_prime",
+        "forw_MT": 64.37,
+        "forw_primer": "GCAACAGCAGCAAGTCGTGG",
+        "rev_MT": 62.32,
+        "rev_primer": "CGAAGTTCCAGACATCGTCG"
+    },
+    "Pair_7": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCTACATCCTTCCTGACTGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTCTGTTTATCCTGTCTCC"
+    },
+    "Pair_8": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTCAGTGTTGGATACGAGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCAGTCAGTAGTAACGCTGC"
+    }
+}

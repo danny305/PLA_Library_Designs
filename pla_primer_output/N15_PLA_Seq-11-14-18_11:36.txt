@@ -1,0 +1,9 @@
+{
+    "forw_primer": "GGATTCTGCGTATTCACTGG",
+    "oligo_bridge": "GTGGG-CGTCA",
+    "pair_num_3": "Pair_2",
+    "pair_num_5": "Pair_35",
+    "rev_primer": "CCGATAAAGCCCTATGAAGG",
+    "sequence": "CCGATAAAGCCCTATGAAGG---------------GCTTTATCGGCAGACTGACG-CCCACACTAAGGATTCTGCG---------------CCAGTGAATACGCAGAATCC",
+    "template": "CCAGTGAATACGCAGAATCC"
+}

@@ -1,0 +1,3 @@
+[submodule "ppt_figs"]
+	path = ppt_figs
+	url = ./ppt_figs/

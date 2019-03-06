@@ -1,0 +1,674 @@
+{
+    "Pair_1": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGAAAAGTGCCAAGTAACGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGGTCACGAACGAAAAGTGC"
+    },
+    "Pair_10": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GCTTCTCAGCACAATAAGGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGGTAATCTCGCTTCTCAGC"
+    },
+    "Pair_11": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCTCCTTTGCTTGCTACTGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGTTGGTGTTCCTCCTTTGC"
+    },
+    "Pair_12": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGCAAATCCGAAGAAGACGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTTAGCATACGCAAATCCG"
+    },
+    "Pair_13": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCTCTATCCCTCCTACTTCC",
+        "rev_MT": 60.27,
+        "rev_primer": "GCTTTTCTCACCTCTATCCC"
+    },
+    "Pair_14": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCATCTCTCCTTGTGTCTGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CCGTTTTTCACCATCTCTCC"
+    },
+    "Pair_15": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCACATCTGGGCAATACACG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCTACTACCACCACATCTGG"
+    },
+    "Pair_16": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTAAAACGGTTAGTGCGGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGGCTCGTATGGTAAAACGG"
+    },
+    "Pair_17": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCAAACGACCAAAGAGAGGG",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTCTTCTAACCAAACGACC"
+    },
+    "Pair_18": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCTAATACCGAGCAGAAAGC",
+        "rev_MT": 60.27,
+        "rev_primer": "GCTAACCCTACCTAATACCG"
+    },
+    "Pair_19": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTTACGACGATGGTGAAGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CCTTTATCCAGGTTACGACG"
+    },
+    "Pair_2": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GCGAAATCTGCCCTTTATCC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCCTTTATCCATCACGGAGC"
+    },
+    "Pair_20": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGAAAAGACCCACACATAGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CCCAAGTATCGGAAAAGACC"
+    },
+    "Pair_21": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGCACTTAGGATAGATTCGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCTCAGTTGTGGCACTTAGG"
+    },
+    "Pair_22": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGGTTTACCCAACATTACCC",
+        "rev_MT": 62.32,
+        "rev_primer": "GCCTACGATACGGTTTACCC"
+    },
+    "Pair_23": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCAACTTACGAGACAACGGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCACCTACCACCAACTTACG"
+    },
+    "Pair_24": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGATTGTGCCTTACAGGTGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTGACTTTGGGATTGTGCC"
+    },
+    "Pair_25": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGCTCTTTGGAGTTTGTCGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCGTGTATCAGGCTCTTTGG"
+    },
+    "Pair_26": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GCGAAAATGGAGTCTCAACG",
+        "rev_MT": 62.32,
+        "rev_primer": "CGACTGCTCAGCGAAAATGG"
+    },
+    "Pair_27": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGTGCTTTCGGAGAATAGGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGAGTTTGAGCGTGCTTTCG"
+    },
+    "Pair_28": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCAACTTGGCAACCCTATGG",
+        "rev_MT": 60.27,
+        "rev_primer": "CCCAGTATTAGCAACTTGGC"
+    },
+    "Pair_29": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCCAATGACGACAACAGTGG",
+        "rev_MT": 60.27,
+        "rev_primer": "GCCTTTATGAGCCAATGACG"
+    },
+    "Pair_3": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGATTATTGGAGTGAGTCCG",
+        "rev_MT": 60.27,
+        "rev_primer": "GGCGGATGTTGGATTATTGG"
+    },
+    "Pair_30": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGTAGAATGCTTTGTCTGGG",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTATGTCCTGGTAGAATGC"
+    },
+    "Pair_31": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GCAAAATAGCCGTGCTTAGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CGAGCGTTAGGCAAAATAGC"
+    },
+    "Pair_32": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGCGAACAGCGTTTATGAGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCAGACTTTAGGCGAACAGC"
+    },
+    "Pair_33": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCATAAGTGGGCTTGTATCG",
+        "rev_MT": 60.27,
+        "rev_primer": "CGAGATGAAGCCATAAGTGG"
+    },
+    "Pair_34": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCGAATGACGGGAGTTATCG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCTTATGGTCCCGAATGACG"
+    },
+    "Pair_35": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCTGAAAGCGTTGTTGTCCG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCAGAATGTCCCTGAAAGCG"
+    },
+    "Pair_36": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCATCAAGCCAGAAAATCGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTAGGTATTCCATCAAGCC"
+    },
+    "Pair_37": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCAATCCTCGCTCAAACAGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CGAAGATGTTCCAATCCTCG"
+    },
+    "Pair_38": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGTTTCATCGCTACTTGTCG",
+        "rev_MT": 60.27,
+        "rev_primer": "CCTAAAGCACGGTTTCATCG"
+    },
+    "Pair_39": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGGAAAATGGTTAGCCTCCG",
+        "rev_MT": 60.27,
+        "rev_primer": "GGGAACCTTTGGGAAAATGG"
+    },
+    "Pair_4": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGGCTAATCCAACTTACAGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTTTTTGGACGGCTAATCC"
+    },
+    "Pair_40": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCTTATCTCCCAACTCCTCG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGCTATCGGTCCTTATCTCC"
+    },
+    "Pair_41": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCTTGAGTCGGTCCTTTACG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCTTGAGGAACCTTGAGTCG"
+    },
+    "Pair_42": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGTGGATTGGAATAGTGTCG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCCTGAAAGTGGTGGATTGG"
+    },
+    "Pair_43": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTATCTGCTCCCATTCTCC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCCATTCTCCAACGAAGTCC"
+    },
+    "Pair_44": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCGTCTCTGTCCTGATTTGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CCTGATTTGCGTATTCACCG"
+    },
+    "Pair_45": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCGAAAGACACCCTGTTTGG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCCTGTTTGGTGTATCCTCG"
+    },
+    "Pair_46": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCACCCTTGTGGAAGTATGG",
+        "rev_MT": 60.27,
+        "rev_primer": "GGAAGTATGGTAATGCGTGG"
+    },
+    "Pair_47": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGCGACACAAGCATTCTTCC",
+        "rev_MT": 60.27,
+        "rev_primer": "GCATTCTTCCTCAGGTATCC"
+    },
+    "Pair_48": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGATAGGGTGGCATCAAACC",
+        "rev_MT": 60.27,
+        "rev_primer": "GCATCAAACCACCTTTTCGG"
+    },
+    "Pair_49": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGTATTAGCGGGAAATGTCG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGAAATGTCGCTCAGGTTGG"
+    },
+    "Pair_5": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTATTGCGGTCCTATGTGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGGTGATTAGGGTATTGCGG"
+    },
+    "Pair_50": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCTGTTGAAAGGTCAGTGGC",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTCAGTGGCTAATGTCTGG"
+    },
+    "Pair_51": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGCAGTGTGAGCATTTACGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCATTTACGGAGCGATGACG"
+    },
+    "Pair_52": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCTTCACATCGGTTTCCTGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTTTCCTGGTTTCTTCCGC"
+    },
+    "Pair_53": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGTGATTTACGCTCTATGGC",
+        "rev_MT": 62.32,
+        "rev_primer": "GCTCTATGGCAAACTCAGGG"
+    },
+    "Pair_54": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCTTAGACCTGGTTGGTTCC",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTTGGTTCCAGGTAGATGG"
+    },
+    "Pair_55": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTTTGGTAGCGACAACAGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGACAACAGCAAATGTGCCC"
+    },
+    "Pair_56": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGACAAGAGTGGTCACAAGC",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTCACAAGCACAGAAGTCG"
+    },
+    "Pair_57": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGTATGAAATGGAACGGTGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGAACGGTGGACTCTTATCC"
+    },
+    "Pair_58": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCTACACCAACCTAAATGGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCTAAATGGCATCACCTGCG"
+    },
+    "Pair_59": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGTTGCCAAAGGACGATACG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGACGATACGAAGGTTTGGG"
+    },
+    "Pair_6": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCAACAGTGCCAGAACTTGG",
+        "rev_MT": 60.27,
+        "rev_primer": "GCTTTATCTGGCAACAGTGC"
+    },
+    "Pair_60": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCAGATGAGACCCTCTTAGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CCCTCTTAGCATCTGAATCG"
+    },
+    "Pair_61": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCCAAATAATGGCTGTTGCC",
+        "rev_MT": 62.32,
+        "rev_primer": "GGCTGTTGCCTTATCCAAGC"
+    },
+    "Pair_62": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGTGTGTGTTCCTACATACC",
+        "rev_MT": 60.27,
+        "rev_primer": "CCTACATACCAATCACACCG"
+    },
+    "Pair_63": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGGTCTAAGTCCGATGTTCG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCGATGTTCGTTTGAGCAGC"
+    },
+    "Pair_64": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGTGACACATCCTAATGACC",
+        "rev_MT": 60.27,
+        "rev_primer": "CCTAATGACCAAATAGCGGG"
+    },
+    "Pair_65": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCTAATGCGAGGACTTACCG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGACTTACCGACTAACGACG"
+    },
+    "Pair_66": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCCAGACCAAGGAAGATACG",
+        "rev_MT": 60.27,
+        "rev_primer": "GGAAGATACGGCTTTACAGG"
+    },
+    "Pair_67": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCTCAGTCATCCGATTTAGG",
+        "rev_MT": 60.27,
+        "rev_primer": "CCGATTTAGGTGTGATTCGC"
+    },
+    "Pair_68": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGTTAGAGACGCAAATCACC",
+        "rev_MT": 62.32,
+        "rev_primer": "GCAAATCACCCCTGTAGTGC"
+    },
+    "Pair_69": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCTAAACTTACCAACCCAGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCAACCCAGCAAAGTTCTCG"
+    },
+    "Pair_7": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCATTCGTCCACAAGGAAGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGTAAGTTGCCCATTCGTCC"
+    },
+    "Pair_70": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCCCATTTCTCCTGTTACCC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCTGTTACCCGTTGACTTCC"
+    },
+    "Pair_71": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGTCCTGACTGGAACTATCC",
+        "rev_MT": 62.32,
+        "rev_primer": "GGAACTATCCGAGATGCTGG"
+    },
+    "Pair_72": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCGTAACAGAGCAAGAAACG",
+        "rev_MT": 60.27,
+        "rev_primer": "GCAAGAAACGAATCACCTGG"
+    },
+    "Pair_73": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCACCTAACGGCTTTCTTCG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCTTTCTTCGGTCACACAGG"
+    },
+    "Pair_74": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCATTGGAAGGGTTAGGTGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTTAGGTGGTTCATCCTGG"
+    },
+    "Pair_75": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCTCAGTAGTGGTTAGTCGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTTAGTCGGTAATCGGTGC"
+    },
+    "Pair_76": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGTGCCATCAGGCTTTATCG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGCTTTATCGGACACCTTCG"
+    },
+    "Pair_77": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCAAGGTTCGGGAATCAACG",
+        "rev_MT": 60.27,
+        "rev_primer": "GGAATCAACGCCTTCATAGC"
+    },
+    "Pair_78": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGAATGCTGCCGTATGAAGC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGTATGAAGCACCTACCAGC"
+    },
+    "Pair_79": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCACCGACAACCTTCATAGG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCTTCATAGGATGGGAACGC"
+    },
+    "Pair_8": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGTATTGAGGTTTACAGCCC",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTTGCGAATGGTATTGAGG"
+    },
+    "Pair_80": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGCTTGTGTCCCTAATCACG",
+        "rev_MT": 60.27,
+        "rev_primer": "CCTAATCACGCTCAGTATGC"
+    },
+    "Pair_81": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCAGTCACAACCTCATAGGG",
+        "rev_MT": 60.27,
+        "rev_primer": "CCTCATAGGGAACATTCTCG"
+    },
+    "Pair_82": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCTGATGTTGGCGTGAATCC",
+        "rev_MT": 62.32,
+        "rev_primer": "GCGTGAATCCTTTACGGAGG"
+    },
+    "Pair_83": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCGTAATGTTCGTGTTGTGG",
+        "rev_MT": 60.27,
+        "rev_primer": "CGTGTTGTGGGTATCTATCG"
+    },
+    "Pair_84": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGGTCAAATAGGTCGGATGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTCGGATGGTCATTAGAGG"
+    },
+    "Pair_85": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCATACCTCACCAAAGTGCG",
+        "rev_MT": 60.27,
+        "rev_primer": "CCAAAGTGCGTCATTCAAGG"
+    },
+    "Pair_86": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCTGAATAGCCCAAGAATCG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCAAGAATCGCCCTATCTCC"
+    },
+    "Pair_87": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGTAAAGCCAGCCACATTGG",
+        "rev_MT": 62.32,
+        "rev_primer": "GCCACATTGGGATAGGTAGC"
+    },
+    "Pair_88": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGACGATTCCGCTTCTTTCC",
+        "rev_MT": 62.32,
+        "rev_primer": "GCTTCTTTCCTCAGTCGTCC"
+    },
+    "Pair_89": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCCGACTAAACCTTCTTGGG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCTTCTTGGGTTATCCTGGG"
+    },
+    "Pair_9": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGTTGTTCGCATCAAATGGG",
+        "rev_MT": 62.32,
+        "rev_primer": "CGCTCAATACCGTTGTTCGC"
+    },
+    "Pair_90": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGCCGATAACCCTAAAACCG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCTAAAACCGTTGCGAACCC"
+    },
+    "Pair_91": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGTAAAGTAGGGATGTTGCC",
+        "rev_MT": 62.32,
+        "rev_primer": "GGATGTTGCCACCAGTATGC"
+    },
+    "Pair_92": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCACTACCATCGGGAAAACC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGGGAAAACCCTGCTATTGG"
+    },
+    "Pair_93": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCTACCAGTGGCATTTAGCG",
+        "rev_MT": 60.27,
+        "rev_primer": "GCATTTAGCGACGACAATCG"
+    },
+    "Pair_94": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCAGCAACTTGGTAATGGCG",
+        "rev_MT": 60.27,
+        "rev_primer": "GGTAATGGCGTAGTGATAGC"
+    },
+    "Pair_95": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CCAAATCCTCGGACTACACC",
+        "rev_MT": 62.32,
+        "rev_primer": "GGACTACACCTAAACGCACG"
+    },
+    "Pair_96": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CCTAAGGAGTCCATTCTTCC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCATTCTTCCGAGATTGCGG"
+    }
+}

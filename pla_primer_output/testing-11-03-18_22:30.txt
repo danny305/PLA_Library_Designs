@@ -1,0 +1,116 @@
+{
+    "3'_ext_pool": {
+        "meta_data": {
+            "GC_high": 60,
+            "GC_low": 40,
+            "extension_end": 3,
+            "pool_size": 8,
+            "primer_length": 20
+        },
+        "primers 1": {
+            "forw_MT": 62.32,
+            "forw_primer": "GGCCGATATGGCACTATTGC",
+            "rev_MT": 60.27,
+            "rev_primer": "GCACTATTGCTCAACTACGG"
+        },
+        "primers 2": {
+            "forw_MT": 62.32,
+            "forw_primer": "CCTAGTCGAGGCAGATTTGG",
+            "rev_MT": 62.32,
+            "rev_primer": "GCAGATTTGGCATGCAAGGC"
+        },
+        "primers 3": {
+            "forw_MT": 60.27,
+            "forw_primer": "CCTCTTCTAAGCTGCTATCG",
+            "rev_MT": 62.32,
+            "rev_primer": "GCTGCTATCGGGTAATTGGG"
+        },
+        "primers 4": {
+            "forw_MT": 62.32,
+            "forw_primer": "CCCAGTATGTGGAAGAAGCC",
+            "rev_MT": 62.32,
+            "rev_primer": "GGAAGAAGCCTTCGTAGTGG"
+        },
+        "primers 5": {
+            "forw_MT": 62.32,
+            "forw_primer": "CCTTCTGGTCGCAATAGACG",
+            "rev_MT": 62.32,
+            "rev_primer": "GCAATAGACGGGCAGATAGC"
+        },
+        "primers 6": {
+            "forw_MT": 60.27,
+            "forw_primer": "GGCGTTTATTCCTTTCCAGG",
+            "rev_MT": 62.32,
+            "rev_primer": "CCTTTCCAGGAACCAGATGC"
+        },
+        "primers 7": {
+            "forw_MT": 62.32,
+            "forw_primer": "CGTGCTGAATGGGTTTAGGG",
+            "rev_MT": 62.32,
+            "rev_primer": "GGGTTTAGGGCTACTTACGC"
+        },
+        "primers 8": {
+            "forw_MT": 60.27,
+            "forw_primer": "CCTATCATGACCATCTTCGG",
+            "rev_MT": 60.27,
+            "rev_primer": "CCATCTTCGGGATAAGTTCC"
+        }
+    },
+    "5'_ext_pool": {
+        "meta_data": {
+            "GC_high": 60,
+            "GC_low": 40,
+            "extension_end": 5,
+            "pool_size": 8,
+            "primer_length": 20
+        },
+        "primers 1": {
+            "forw_MT": 60.27,
+            "forw_primer": "CGAAAACGGAAAGAGACACG",
+            "rev_MT": 60.27,
+            "rev_primer": "GCTTGTGGATCGAAAACGGA"
+        },
+        "primers 2": {
+            "forw_MT": 62.32,
+            "forw_primer": "GGCAATGACGGTTCACTAGG",
+            "rev_MT": 62.32,
+            "rev_primer": "GCGAAACCAAGGCAATGACG"
+        },
+        "primers 3": {
+            "forw_MT": 60.27,
+            "forw_primer": "CCGGTTTAGAGATACCATCC",
+            "rev_MT": 60.27,
+            "rev_primer": "CGGGATTTGACCGGTTTAGA"
+        },
+        "primers 4": {
+            "forw_MT": 62.32,
+            "forw_primer": "CGGTATTGAGCTCGACTACG",
+            "rev_MT": 60.27,
+            "rev_primer": "GGATGACACTCGGTATTGAG"
+        },
+        "primers 5": {
+            "forw_MT": 62.32,
+            "forw_primer": "CGTGAGCTGCAATCAGTTCG",
+            "rev_MT": 62.32,
+            "rev_primer": "CCAGATAGTACGTGAGCTGC"
+        },
+        "primers 6": {
+            "forw_MT": 60.27,
+            "forw_primer": "GCAAGTGGAGTTATTGAGGC",
+            "rev_MT": 62.32,
+            "rev_primer": "CGGAATCACTGCAAGTGGAG"
+        },
+        "primers 7": {
+            "forw_MT": 62.32,
+            "forw_primer": "GGATCCAACGGTGGTTAACG",
+            "rev_MT": 62.32,
+            "rev_primer": "CGAAGCGTTTGGATCCAACG"
+        },
+        "primers 8": {
+            "forw_MT": 62.32,
+            "forw_primer": "CGCAATTCGTGAAGGACACC",
+            "rev_MT": 62.32,
+            "rev_primer": "CGGTTAGGACCGCAATTCGT"
+        }
+    }
+}

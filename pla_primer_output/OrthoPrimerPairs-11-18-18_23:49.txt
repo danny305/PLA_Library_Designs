@@ -1,0 +1,79 @@
+{
+    "Pair_1": {
+        "extension": "5_prime",
+        "forw_MT": 64.37,
+        "forw_primer": "CCCGTCCATTGATGCTCTGG",
+        "rev_MT": 62.32,
+        "rev_primer": "CGTATGCTGGTCACTCTTCC"
+    },
+    "Pair_10": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGAGGTTCATCATTCGTCGC",
+        "rev_MT": 60.27,
+        "rev_primer": "CGCAAATGTCACCATCATCC"
+    },
+    "Pair_11": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GGTCGTGTAAAGTGAAGAGC",
+        "rev_MT": 62.32,
+        "rev_primer": "GGTCACCCAAATCTCTACCG"
+    },
+    "Pair_2": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "GCCTCAACTTAGACTTAGCG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCATTACGACTCCGCTTACG"
+    },
+    "Pair_3": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGTAACTCCCTGTAGAAGCC",
+        "rev_MT": 62.32,
+        "rev_primer": "CCAGCGACTTTCTCTCTTCC"
+    },
+    "Pair_4": {
+        "extension": "5_prime",
+        "forw_MT": 64.37,
+        "forw_primer": "CGAACACGACGAACCATCCG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCGACTGAACACGATAAGGC"
+    },
+    "Pair_5": {
+        "extension": "5_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "CGTTGACGCTGGGATTTACG",
+        "rev_MT": 60.27,
+        "rev_primer": "GGTTCTGTAATCTACCCTGC"
+    },
+    "Pair_6": {
+        "extension": "5_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGATGATAACTGCGATTCGG",
+        "rev_MT": 60.27,
+        "rev_primer": "GGGATTATGCGTGATGTTGG"
+    },
+    "Pair_7": {
+        "extension": "3_prime",
+        "forw_MT": 60.27,
+        "forw_primer": "CGTGCCTTAGTATCTGAACC",
+        "rev_MT": 62.32,
+        "rev_primer": "CGTGTTCGTGAATCCAACGC"
+    },
+    "Pair_8": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GGCACATCTTTGGGACTTCG",
+        "rev_MT": 62.32,
+        "rev_primer": "CCGTGTATTGGTGAGTAGGC"
+    },
+    "Pair_9": {
+        "extension": "3_prime",
+        "forw_MT": 62.32,
+        "forw_primer": "GCCCTTATGTTACGGTGAGC",
+        "rev_MT": 60.27,
+        "rev_primer": "GGCTTTATGGATGCTTCACG"
+    }
+}
