@@ -49,8 +49,9 @@ def randSeqGen(length=25):
             #print(f'sequence not random enough: {seq}')
             continue
 
+
         print(re.findall('[C]{2,3}|[G]{2,3}|[A]{2,3}|[T]{2,3}', str(seq)))
-        print(f'Valid sequence: {seq}')
+        #print(f'Valid sequence: {seq}')
 
         return seq
 
@@ -78,6 +79,7 @@ def GenOligoGC(length=25, GC_low=40, GC_high=60):
         if GC_content >= GC_low and GC_content <= GC_high:
             if GC_content1_10 >= GC_low and GC_content1_10 <= GC_high:
                 if GC_content11_20 >= GC_low and GC_content11_20 <= GC_high:
+                    print(seq)
                     return seq
 
 
@@ -87,13 +89,12 @@ def GenOligoGC(length=25, GC_low=40, GC_high=60):
 
 def genPrimerPairs(primer_length=20, GC_low=40, GC_high=60):
     """Primer pairs for Half-Mers."""
-
     print('Primers for half-mers')
 
     forwTemplate5_3 = GenOligoGC(primer_length,GC_low, GC_high)
     """re.match checks if the first 2 Nuc are GC in the forward and backwards direction"""
-    while not (re.match("[GC]{2}",str(forwTemplate5_3)) and
-               re.match("[GC]{2}", str(forwTemplate5_3[::-1]))):
+    while not (re.match("[GC]{2}[AT]",str(forwTemplate5_3)) and
+               re.match("[GC]{2}[AT]", str(forwTemplate5_3[::-1]))):
 
         forwTemplate5_3 = GenOligoGC(primer_length,GC_low, GC_high)
 
@@ -105,8 +106,8 @@ def genPrimerPairs(primer_length=20, GC_low=40, GC_high=60):
 
     revPrimer = GenOligoGC(primer_length,GC_low, GC_high)
     """re.match checks if the first 2 Nuc are GC in the forward and backwards direction"""
-    while not (re.match("[GC]{2}", str(revPrimer)) and
-               re.match("[GC]{2}", str(revPrimer[::-1]))):
+    while not (re.match("[GC]{2}[AT]", str(revPrimer)) and
+               re.match("[GC]{2}[AT]", str(revPrimer[::-1]))):
 
         revPrimer = GenOligoGC(primer_length, GC_low, GC_high)
 
@@ -378,8 +379,11 @@ def retLigatedSeqData(*,filename,five_prime,three_prime, ret_dict=True):
 
     with open(filename,'r') as f:
         file = json.load(f)
+        print(file)
         five_prime_data = file.get(five_prime)
         three_prime_data = file.get(three_prime)
+        print(five_prime_data)
+        print(three_prime_data)
         five_prime_seq = five_prime_data['sequence']
         three_prime_seq = three_prime_data['sequence']
 
@@ -462,9 +466,9 @@ def convNamedTuple2Dict(namedtuples):
 
 def grabPrimersFromFile(filename, *, chosen_3_pairs=None, chosen_5_pairs=None):
     if chosen_3_pairs == None:
-        chosen_3_pairs = ['Pair_21']
+        chosen_3_pairs = ['Pair_8']
     if chosen_5_pairs == None:
-        chosen_5_pairs = ['Pair_24']
+        chosen_5_pairs = ['Pair_2']
 
 
     chosen_primers = list()
@@ -478,9 +482,15 @@ def grabPrimersFromFile(filename, *, chosen_3_pairs=None, chosen_5_pairs=None):
     return chosen_primers
 
 
+
+def grabSeqFromFile(filename):
+    pass
+
+
+
 def genSplintSeq(filename, *, splint_len=20):
-    chosen_3_pairs = ['Pair_2', 'Pair_12', 'Pair_36', 'Pair_39', 'Pair_45']
-    chosen_5_pairs = ['Pair_14', 'Pair_17', 'Pair_19', 'Pair_29', 'Pair_35']
+    chosen_3_pairs = ['Pair_2']
+    chosen_5_pairs = ['Pair_1']
     chosen_primers = list()
     with open(filename, 'r') as f:
         file = json.load(f)
@@ -497,6 +507,7 @@ def genSplintSeq(filename, *, splint_len=20):
             splint_oligo_complement += oligo_4_splint
     splint_oligo_complement = Seq(splint_oligo_complement)
     print("Sequence:",splint_oligo_complement,
+          "\nCompliment:", splint_oligo_complement.complement(),
           "\nReverse Compliment:", splint_oligo_complement.reverse_complement(),end='\n\n')
 
     return splint_oligo_complement.reverse_complement()
@@ -513,7 +524,7 @@ if __name__=="__main__":
     #print([certMTPrimerPairs() for _ in range(5)])
     #print(certMTPrimerPairs())
 
-    # pool = gen5_3PrimerPairPools(20)
+    # pool = gen5_3PrimerPairPools(15)
     # print(pool)
     # pool_tuple = NameTupleAllPrimers(pool)
     # print(pool_tuple)
@@ -523,18 +534,18 @@ if __name__=="__main__":
     # pool_dict = convNamedTuple2Dict(ortho_tuple)
     # export2File(pool_dict,filename='OrthoPrimerPairs',f_ext='txt')
 
-    # chosen_primers = grabPrimersFromFile("OrthoPrimerPairs-11-18-18_22:45.txt")
+    # chosen_primers = grabPrimersFromFile("OrthoPrimerPairs-11-20-18_14:04.txt")
     # print(chosen_primers)
     # formatted_seq = retFormattedSeq(chosen_primers)
     # formatted_dict = convNamedTuple2Dict(formatted_seq)
     # export2File(formatted_dict, filename='ChosenPrimerPairs', f_ext='txt')
 
 
-    # final_seq = retLigatedSeqData(filename="ChosenPrimerPairs-11-19-18_06:00.txt",five_prime=21,three_prime=24)
-    # print(final_seq)
+    final_seq = retLigatedSeqData(filename="ChosenPrimerPairs-11-20-18_14:16.txt",five_prime=2,three_prime=1)
+    print(final_seq)
 
 
-    genSplintSeq('ChosenPrimerPairs-11-19-18_06:00.txt')
-    genSplintSeq('ChosenPrimerPairs-11-19-18_06:00.txt',splint_len=16)
-    genSplintSeq('ChosenPrimerPairs-11-19-18_06:00.txt', splint_len=12)
+    # genSplintSeq('ChosenPrimerPairs-11-20-18_14:16.txt')
+    # genSplintSeq('ChosenPrimerPairs-11-20-18_14:16.txt',splint_len=16)
+    # genSplintSeq('ChosenPrimerPairs-11-20-18_14:16.txt', splint_len=12)
 
