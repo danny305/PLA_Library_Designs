@@ -1,5 +1,5 @@
-from numpy.random import choice, seed
-from itertools import combinations
+from numpy.random import choice
+from itertools import combinations, product
 from difflib import SequenceMatcher
 
 from Bio.Seq import Seq
@@ -7,8 +7,10 @@ from Bio.Alphabet import generic_dna
 from Bio.SeqUtils import GC, MeltingTemp as MT
 
 from math import fabs
+from datetime import datetime
 
 import re
+import json
 
 
 class PLA_Seq():
@@ -17,7 +19,7 @@ class PLA_Seq():
 
         if not isinstance(orth_seqs, (list,tuple)):
             raise TypeError('Parameter orth_seq must be of type List or Tuple.')
-        self.input_orth_sequence =tuple(orth_seqs) if len(orth_seqs) > 0 else None
+        self.ref_orth_sequence =tuple(orth_seqs) if len(orth_seqs) > 0 else None
         self.seq_len = seq_len
 
 
@@ -95,7 +97,7 @@ class PLA_Seq():
             if GC_content >= GC_low and GC_content <= GC_high:
                 if GC_content_f_half >= GC_low and GC_content_f_half <= GC_high:
                     if GC_content_b_half >= GC_low and GC_content_b_half <= GC_high:
-                        print(f'Valid GC content: {seq}  GC%: {GC_content}',)
+                        #print(f'Valid GC content: {seq}  GC%: {GC_content}',)
                         return seq
 
 
@@ -108,9 +110,9 @@ class PLA_Seq():
         forwPrimer = forwTemplate5_3.reverse_complement()
         revPrimer = PLA_Seq.GenOligoGC(primer_length, GC_low, GC_high)
 
-        print(f"Template   Seq 3\' - > 5\': {forwTemplate5_3[::-1]}")
-        print(f"ForwPrimer Seq 5\' - > 3\': {forwPrimer}")
-        print(f"RevPrimer  Seq 5\' - > 3\': {revPrimer}")
+        # print(f"Template   Seq 3\' - > 5\': {forwTemplate5_3[::-1]}")
+        # print(f"ForwPrimer Seq 5\' - > 3\': {forwPrimer}")
+        # print(f"RevPrimer  Seq 5\' - > 3\': {revPrimer}")
 
         return forwPrimer, revPrimer
 
@@ -132,22 +134,22 @@ class PLA_Seq():
         fprimer_MT_NN = round(MT.Tm_NN(fprimer, Na=50, Mg=3, dNTPs=0.8, saltcorr=7), 2)
         rprimer_MT_NN = round(MT.Tm_NN(fprimer, Na=50, Mg=3, dNTPs=0.8, saltcorr=7), 2)
 
-        print(f"forw primer: {fprimer}\nforw primer MT: {fprimer_MT} (NN){fprimer_MT_NN} \n"
-              f"rev  primer: {rprimer}\nrev primer MT : {rprimer_MT} (NN){rprimer_MT_NN} \n")
+        #print(f"forw primer: {fprimer}\nforw primer MT: {fprimer_MT} (NN){fprimer_MT_NN} \n"
+         #     f"rev  primer: {rprimer}\nrev primer MT : {rprimer_MT} (NN){rprimer_MT_NN} \n")
 
         """Filters for primers that meet the MT standards"""
         if fabs(fprimer_MT - rprimer_MT) <= 3.0 and \
                 max(fprimer_MT, rprimer_MT) < 65.0 and \
                 min(fprimer_MT, rprimer_MT) > 59.0:
 
-            print("MT of primer pair passed.\n")
+            #print("MT of primer pair passed.\n")
 
             if ret_mt == False:
                 return True
             else:
                 return fprimer_MT, rprimer_MT
         else:
-            print("MT for the primer pairs did not meet standards\n");
+            #print("MT for the primer pairs did not meet standards\n")
             return False
 
 
@@ -169,7 +171,7 @@ class PLA_Seq():
             if PLA_Seq.selfDimerizeTest(fprimer) and PLA_Seq.selfDimerizeTest(rprimer):
                 chk_primer_mt = PLA_Seq.evalPrimerPairMT(fprimer, rprimer)
 
-        return fprimer, rprimer if ret_str == False else str(fprimer), str(rprimer)
+        return (fprimer, rprimer) if ret_str == False else (str(fprimer), str(rprimer))
 
 
 
@@ -178,7 +180,7 @@ class PLA_Seq():
     @staticmethod
     def calcPhaseMatch(seq1, seq2, limit = 3):
 
-        if not (isinstance(seq1, (str,Seq)) and isinstance(seq2, (str,Seq))):
+        if not (isinstance(seq1, Seq) and isinstance(seq2, Seq)):
             raise AssertionError('Seq 1 and Seq 2 must both be either a str or Seq object.')
 
         # if len(seq1) != len(seq2):
@@ -231,63 +233,189 @@ class PLA_Seq():
         primer_Rev = primer[::-1]
         primer_Com = primer.complement()
 
-        PLA_Seq.calcPhaseMatch(primer_Rev, primer_Com)
+        return PLA_Seq.calcPhaseMatch(primer_Rev, primer_Com)
+
 
 
 
 
     @staticmethod
-    def OrthogonalityTest(seq_1, seq_2, limit=4):
-        if not (isinstance(seq_1, (str,Seq)) and isinstance(seq_2, (str,Seq))):
+    def OrthogonalityTest(seq_1, seq_2, limit=3):
+        if isinstance(seq_1, str) and isinstance(seq_2, str):
+            seq_1 = Seq(seq_1, generic_dna)
+            seq_2 = Seq(seq_2, generic_dna)
+
+        elif not(isinstance(seq_1, Seq) and isinstance(seq_2, Seq)):
             raise AssertionError('Seq 1 and Seq 2 must both be either a str or Seq object.')
 
         #print(f"Checking orthogonality between:\n{seq_1} and \n{seq_2}")
         seq_1_Rev = seq_1[::-1]
         seq_2_Com = seq_2.complement()
 
-        PLA_Seq.calcPhaseMatch(seq_1_Rev, seq_2_Com, limit)
+        return PLA_Seq.calcPhaseMatch(seq_1_Rev, seq_2_Com, limit)
+
 
 
     @staticmethod
-    def orthogonalPoolComb(tuple_list, len_output_seq=0, round=1):
-        print(250 * "_")
-        all_combinations = combinations(tuple_list, 2)
-        filtered_sequences = list()
-        for pair1, pair2 in all_combinations:
+    def genOrthPrimerPairs(length=20, limit=4, GC_low=40, GC_high=60, ret_str=True):
 
-            forwP_forwP = PLA_Seq.OrthogonalityTest(pair1.forw_primer, pair2.forw_primer, limit=5)
-            forwP_revP = PLA_Seq.OrthogonalityTest(pair1.forw_primer, pair2.rev_primer, limit=5)
-            revP_forwP = PLA_Seq.OrthogonalityTest(pair1.rev_primer, pair2.forw_primer, limit=5)
-            revP_revP = PLA_Seq.OrthogonalityTest(pair1.rev_primer, pair2.rev_primer, limit=5)
+        gen_orthogonal_pair = False
+        while not gen_orthogonal_pair:
+            forwPrimer, revPrimer = PLA_Seq.certMT_SelfDimerPrimerPairs(
+                length=length, GC_low=GC_low, GC_high=GC_high, ret_str=ret_str)
 
-            ortho_results = [forwP_forwP, forwP_revP, revP_forwP, revP_revP]
+            if PLA_Seq.OrthogonalityTest(forwPrimer, revPrimer):
+                return forwPrimer, revPrimer
 
-            if not (False in ortho_results):
-                if pair1 not in filtered_sequences:
-                    filtered_sequences.append(pair1)
-                if pair2 not in filtered_sequences:
-                    filtered_sequences.append(pair2)
-            else:
-                if pair1 in filtered_sequences:
-                    filtered_sequences.remove(pair1)
-                if pair2 in filtered_sequences:
-                    filtered_sequences.remove(pair2)
 
-        len_filtered_seq = len(filtered_sequences)
-        if len_filtered_seq == len_output_seq and len_filtered_seq != 0:
-            return filtered_sequences, round
-        else:
-            print(len_filtered_seq, round)
-            return PLA_Seq.orthogonalPoolComb(filtered_sequences, len_output_seq=len_filtered_seq, round=round + 1)
+
+    @staticmethod
+    def genOrthoPrimerPairPool(pool_size=4, length=20, *, GC_low=40, GC_high=60, ret_str=True, limit=4):
+        """Generate a pool of primer pairs that pass the melt temp criteria defined in
+        genCertPrimerPairs(). Default is the 5'extension half-asstemers primers."""
+
+        pool = dict()
+        count = 1
+        while len(pool.keys()) <= pool_size:
+            pool['meta_data'] = {
+                'pool_size': pool_size, 'primer_length': length,
+                "GC_low": GC_low, "GC_high": GC_high,
+                "date" : datetime.today().strftime("%-m-%d-%Y_%-H:%-M")
+                }
+
+            primerKeyName = f"Pair-{count}"
+            primers = dict()
+
+            forwPrimer, revPrimer = PLA_Seq.genOrthPrimerPairs(length=length, GC_low=GC_low, GC_high=GC_high,
+                                                               ret_str=ret_str,limit=limit)
+
+            if PLA_Seq.poolOrthogonalityTest(pool, forwPrimer, revPrimer, limit):
+                primers['forward'], primers['reverse'] = forwPrimer, revPrimer
+                primers['forward_MT'], primers['reverseMT'] = PLA_Seq.retPrimerPairMT(forwPrimer, revPrimer)
+                pool[primerKeyName] = primers
+                print(f'Added primer pair {count}')
+                count += 1
+
+        return pool
+
+
+
+
+    def genOrthoPrimers2Ref(self, pool_size=4, length=20, *, GC_low=40, GC_high=60, ret_str=True, limit=4):
+
+        if len(self.ref_orth_sequence) == 0:
+            return PLA_Seq.genOrthoPrimerPairPool(pool_size=pool_size, length=length,
+                                                  GC_low=GC_low, GC_high=GC_high,
+                                                  ret_str=ret_str, limit=limit)
+
+        pool = dict()
+        count = 1
+
+        while len(pool.keys()) <= pool_size:
+            pool['meta_data'] = {
+                'pool_size': pool_size, 'primer_length': length,
+                "GC_low": GC_low, "GC_high": GC_high,
+                "date" : datetime.today().strftime("%-m-%d-%Y_%-H:%-M")
+                }
+
+            primerKeyName = f"Pair-{count}"
+            primers = dict()
+
+            forwPrimer, revPrimer = PLA_Seq.genOrthPrimerPairs(length=length, GC_low=GC_low, GC_high=GC_high,
+                                                               ret_str=ret_str,limit=limit)
+
+            # combos = [tuple(combinations([forwPrimer, revPrimer, ref_seq],2))[1],
+            #             for ref_seq in self.ref_orth_sequence]
+
+            combos = tuple(product([forwPrimer, revPrimer], self.ref_orth_sequence, repeat=1))
+            if not all([PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos]):
+                continue
+            print(f'Forw: {forwPrimer} Rev: {revPrimer} are orthogonal to current primers.')
+
+
+            if PLA_Seq.poolOrthogonalityTest(pool, forwPrimer, revPrimer, limit):
+                primers['forward'], primers['reverse'] = forwPrimer, revPrimer
+                primers['forward_MT'], primers['reverseMT'] = PLA_Seq.retPrimerPairMT(forwPrimer, revPrimer)
+                pool[primerKeyName] = primers
+                print(f'Added primer pair {count}')
+                count += 1
+
+        self.ortho_pool_ortho_ref = pool
+        return pool
+
+
+
+
+    @staticmethod
+    def poolOrthogonalityTest(pool, forwPrimer, revPrimer, limit=3):
+
+        for key, p_dict in pool.items():
+            if key is 'meta_data':
+                continue
+
+            # print([PLA_Seq.OrthogonalityTest(*ppair, limit=4) for ppair in combos])
+            # print(all([PLA_Seq.OrthogonalityTest(*ppair, limit=4) for ppair in combos]))
+
+            combos = list(combinations([p_dict['forward'], p_dict['reverse'], forwPrimer], 2))[1:] + \
+                     list(combinations([p_dict['forward'], p_dict['reverse'], revPrimer], 2))[1:]
+
+            if not all([PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos]):
+                return False
+        return True
+
+
+
+    @staticmethod
+    def export2File(dict_, *, filename, f_ext='json'):
+        now = datetime.now().strftime("%m-%d-%y_%H:%M")
+        with open(f"{filename}-{now}.{f_ext}", 'w+') as f:
+            json.dump(dict_, f, indent=4, sort_keys=True)
+        print('created file')
+
+
+
+    @staticmethod
+    def genSplintSeq(filename, *, splint_len=20):
+        chosen_3_pairs = ['Pair_2']
+        chosen_5_pairs = ['Pair_1']
+        chosen_primers = list()
+        with open(filename, 'r') as f:
+            file = json.load(f)
+
+        half_splint_len = splint_len // 2
+        splint_oligo_complement = ''
+        for dic in file.values():
+            if dic['extension'] == '3_prime':
+                oligo_4_splint = dic['sequence'][-half_splint_len:]
+                splint_oligo_complement = oligo_4_splint + splint_oligo_complement
+
+            elif dic['extension'] == '5_prime':
+                oligo_4_splint = dic['sequence'][:half_splint_len]
+                splint_oligo_complement += oligo_4_splint
+        splint_oligo_complement = Seq(splint_oligo_complement)
+        print("Sequence:", splint_oligo_complement,
+              "\nCompliment:", splint_oligo_complement.complement(),
+              "\nReverse Compliment:", splint_oligo_complement.reverse_complement(), end='\n\n')
+
+        return splint_oligo_complement.reverse_complement()
+
+
+
+
 
 
 
 
 def main():
-    primer_pairs = PLA_Seq.genPrimerPairs()
-    PLA_Seq.selfDimerizeTest(primer_pairs[0])
+    # primer_pairs = PLA_Seq.genPrimerPairs()
+    # PLA_Seq.selfDimerizeTest(primer_pairs[0])
     # PLA_Seq.evalPrimerPairMT(*primer_pairs)
     #print(PLA_Seq.certMT_SelfDimerPrimerPairs())
+
+    #print(PLA_Seq.genOrthoPrimerPairPool(3))
+    #print(PLA_Seq.genOrthPrimerPairs())
+    obj = PLA_Seq(['GGTGTAAAGTCCACTCTACC', 'GCTCAGACCAATGGAGATGC',
+                   'CCAGTCAGTAGTAACGCTGC', 'GGTCAGTGTTGGATACGAGC']).genOrthoPrimers2Ref()
 
 
 
