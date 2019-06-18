@@ -24,13 +24,15 @@ class PLA_Seq():
 
 
     @staticmethod
-    def randSeqGen(length=20):
+    def randSeqGen(length=20, clamps=True):
         """
         Generates and returns a DNA Sequence object of the desired nucleotide length.
         Where the maximum number of adjacent same nucleotides is 3
         """
 
         seq_approved = False
+
+        p_length = length - 6 if clamps else length
 
         def return_rand_clamp(end):
             """
@@ -51,10 +53,12 @@ class PLA_Seq():
 
             return choice(combos)
 
-        seq = return_rand_clamp(5)
+
+        seq = return_rand_clamp(5) if clamps else ""
 
         while not seq_approved:
-            test_seq = seq + ''.join([choice(['A', 'T', 'C', 'G']) for _ in range(length - 6)])
+
+            test_seq = seq + ''.join([choice(['A', 'T', 'C', 'G']) for _ in range(p_length)])
 
 
             if re.search("[G]{4,100}|[C]{4,100}|[A]{4,100}|[T]{4,100}", test_seq):
@@ -71,10 +75,12 @@ class PLA_Seq():
             seq = test_seq
             #print(re.findall('[C]{2,3}|[G]{2,3}|[A]{2,3}|[T]{2,3}', seq))
 
-
-        seq += return_rand_clamp(3)
+        if clamps:
+            seq += return_rand_clamp(3)
         #print(f'Valid sequence: {seq}')
         return Seq(seq, generic_dna)
+
+
 
     @staticmethod
     def chkGC_content(sequence=Seq('GAGACCTT', generic_dna)):
@@ -83,6 +89,7 @@ class PLA_Seq():
         num_G, num_C = sequence.count('G'), sequence.count('C')
         GC_content = round((num_C + num_G) / seq_len * 100, 1)
         return GC_content
+
 
 
     @staticmethod
@@ -101,6 +108,7 @@ class PLA_Seq():
                         return seq
 
 
+
     @staticmethod
     def genPrimerPairs(primer_length=20, GC_low=40, GC_high=60):
         """Primer pairs for Half-Mers."""
@@ -115,6 +123,8 @@ class PLA_Seq():
         # print(f"RevPrimer  Seq 5\' - > 3\': {revPrimer}")
 
         return forwPrimer, revPrimer
+
+
 
     @staticmethod
     def evalPrimerPairMT(fprimer, rprimer, ret_mt=False):
@@ -153,11 +163,13 @@ class PLA_Seq():
             return False
 
 
+
     @staticmethod
     def retPrimerPairMT(fprimer, rprimer):
         forwMT, revMT = [round(temp, 2)
                             for temp in PLA_Seq.evalPrimerPairMT(fprimer, rprimer, ret_mt=True)]
         return forwMT, revMT
+
 
 
 
@@ -315,7 +327,8 @@ class PLA_Seq():
             pool['meta_data'] = {
                 'pool_size': pool_size, 'primer_length': length,
                 "GC_low": GC_low, "GC_high": GC_high,
-                "date" : datetime.today().strftime("%-m-%d-%Y_%-H:%-M")
+                "date" : datetime.today().strftime("%-m-%d-%Y_%-H:%-M"),
+                "ortho_limit": limit
                 }
 
             primerKeyName = f"Pair-{count}"
