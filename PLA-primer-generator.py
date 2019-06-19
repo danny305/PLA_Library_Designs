@@ -60,6 +60,8 @@ class PLA_Seq():
 
             test_seq = seq + ''.join([choice(['A', 'T', 'C', 'G']) for _ in range(p_length)])
 
+            if clamps:
+                test_seq += return_rand_clamp(3)
 
             if re.search("[G]{4,100}|[C]{4,100}|[A]{4,100}|[T]{4,100}", test_seq):
                 #print(f"The sequence: {test_seq} is invalid")
@@ -75,8 +77,6 @@ class PLA_Seq():
             seq = test_seq
             #print(re.findall('[C]{2,3}|[G]{2,3}|[A]{2,3}|[T]{2,3}', seq))
 
-        if clamps:
-            seq += return_rand_clamp(3)
         #print(f'Valid sequence: {seq}')
         return Seq(seq, generic_dna)
 
@@ -93,11 +93,9 @@ class PLA_Seq():
 
 
     @staticmethod
-    def GenOligoGC(length=20, GC_low=40, GC_high=60):
-        generate = True
-        # seed(int(time()))
-        while generate == True:
-            seq = PLA_Seq.randSeqGen(length)
+    def GenOligoGC(length=20, GC_low=40, GC_high=60, clamps=True):
+        while True:
+            seq = PLA_Seq.randSeqGen(length, clamps=clamps)
             GC_content = GC(seq)
             GC_content_f_half = GC(seq[:length//2])
             GC_content_b_half = GC(seq[length//2:])
@@ -110,13 +108,13 @@ class PLA_Seq():
 
 
     @staticmethod
-    def genPrimerPairs(primer_length=20, GC_low=40, GC_high=60):
+    def genPrimerPairs(primer_length=20, GC_low=40, GC_high=60, clamps=True):
         """Primer pairs for Half-Mers."""
         #print('Primers for half-mers')
 
-        forwTemplate5_3 = PLA_Seq.GenOligoGC(primer_length, GC_low, GC_high)
+        forwTemplate5_3 = PLA_Seq.GenOligoGC(primer_length, GC_low, GC_high, clamps)
         forwPrimer = forwTemplate5_3.reverse_complement()
-        revPrimer = PLA_Seq.GenOligoGC(primer_length, GC_low, GC_high)
+        revPrimer = PLA_Seq.GenOligoGC(primer_length, GC_low, GC_high, clamps)
 
         # print(f"Template   Seq 3\' - > 5\': {forwTemplate5_3[::-1]}")
         # print(f"ForwPrimer Seq 5\' - > 3\': {forwPrimer}")
@@ -174,11 +172,12 @@ class PLA_Seq():
 
 
     @staticmethod
-    def certMT_SelfDimerPrimerPairs(length=20, *, GC_low=40, GC_high=60, ret_str=True):
+    def certMT_SelfDimerPrimerPairs(length=20, *, GC_low=40, GC_high=60, clamps=True, ret_str=True):
 
         chk_primer_mt = False
         while not chk_primer_mt:
-            fprimer, rprimer = PLA_Seq.genPrimerPairs(primer_length=length, GC_low=GC_low, GC_high=GC_high)
+            fprimer, rprimer = PLA_Seq.genPrimerPairs(primer_length=length,
+                                                      GC_low=GC_low, GC_high=GC_high, clamps=clamps)
 
             if PLA_Seq.selfDimerizeTest(fprimer) and PLA_Seq.selfDimerizeTest(rprimer):
                 chk_primer_mt = PLA_Seq.evalPrimerPairMT(fprimer, rprimer)
@@ -288,13 +287,14 @@ class PLA_Seq():
 
         pool = dict()
         count = 1
-        while len(pool.keys()) <= pool_size:
-            pool['meta_data'] = {
-                'pool_size': pool_size, 'primer_length': length,
-                "GC_low": GC_low, "GC_high": GC_high,
-                "date" : datetime.today().strftime("%-m-%d-%Y_%-H:%-M")
-                }
 
+        pool['meta_data'] = {
+            'pool_size': pool_size, 'primer_length': length,
+            "GC_low": GC_low, "GC_high": GC_high,
+            "date": datetime.today().strftime("%-m-%d-%Y_%-H:%-M")
+        }
+
+        while len(pool.keys()) <= pool_size:
             primerKeyName = f"Pair-{count}"
             primers = dict()
 
@@ -313,7 +313,7 @@ class PLA_Seq():
 
 
 
-    def genOrthoPrimers2Ref(self, pool_size=4, length=20, *, GC_low=40, GC_high=60, ret_str=True, limit=4):
+    def genOrthoPrimers2Ref(self, pool_size=3, length=20, *, GC_low=40, GC_high=60, ret_str=True, limit=4):
 
         if len(self.ref_orth_sequence) == 0:
             return PLA_Seq.genOrthoPrimerPairPool(pool_size=pool_size, length=length,
@@ -323,14 +323,15 @@ class PLA_Seq():
         pool = dict()
         count = 1
 
-        while len(pool.keys()) <= pool_size:
-            pool['meta_data'] = {
-                'pool_size': pool_size, 'primer_length': length,
-                "GC_low": GC_low, "GC_high": GC_high,
-                "date" : datetime.today().strftime("%-m-%d-%Y_%-H:%-M"),
-                "ortho_limit": limit
-                }
+        pool['meta_data'] = {
+            'pool_size': pool_size, 'primer_length': length,
+            "GC_low": GC_low, "GC_high": GC_high,
+            "date": datetime.today().strftime("%-m-%d-%Y_%-H:%-M"),
+            "ortho_limit": limit,
+            'reference_sequences': self.ref_orth_sequence
+        }
 
+        while len(pool.keys()) <= pool_size:
             primerKeyName = f"Pair-{count}"
             primers = dict()
 
@@ -342,6 +343,7 @@ class PLA_Seq():
 
             combos = tuple(product([forwPrimer, revPrimer], self.ref_orth_sequence, repeat=1))
             if not all([PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos]):
+                print('Failed orthogonality to current primers')
                 continue
             print(f'Forw: {forwPrimer} Rev: {revPrimer} are orthogonal to current primers.')
 
@@ -351,12 +353,20 @@ class PLA_Seq():
                 primers['forward_MT'], primers['reverseMT'] = PLA_Seq.retPrimerPairMT(forwPrimer, revPrimer)
                 pool[primerKeyName] = primers
                 print(f'Added primer pair {count}')
+                self.ortho_pool_ortho_ref = pool
+                self.exportPool2_JSON()
                 count += 1
 
         self.ortho_pool_ortho_ref = pool
         return pool
 
 
+
+    def exportPool2_JSON(self, filename='OrthoPool_OrthoRef'):
+        now = datetime.now().strftime("%m-%d-%y_%H:%M")
+        with open(f"./pla_primer_output/{filename}-{now}.json", 'w+') as f:
+            json.dump(self.ortho_pool_ortho_ref, f, indent=4, sort_keys=True)
+        print('created file')
 
 
     @staticmethod
@@ -428,7 +438,10 @@ def main():
     #print(PLA_Seq.genOrthoPrimerPairPool(3))
     #print(PLA_Seq.genOrthPrimerPairs())
     obj = PLA_Seq(['GGTGTAAAGTCCACTCTACC', 'GCTCAGACCAATGGAGATGC',
-                   'CCAGTCAGTAGTAACGCTGC', 'GGTCAGTGTTGGATACGAGC']).genOrthoPrimers2Ref()
+                   'CCAGTCAGTAGTAACGCTGC', 'GGTCAGTGTTGGATACGAGC'])
+    obj.genOrthoPrimers2Ref()
+
+
 
 
 

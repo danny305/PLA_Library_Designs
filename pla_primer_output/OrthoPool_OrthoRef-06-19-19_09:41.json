@@ -1,0 +1,28 @@
+{
+    "Pair-1": {
+        "forward": "GCTATCAGTCCACGAAATGC",
+        "forward_MT": 60.27,
+        "reverse": "CGAAGTAGGGATTAGTGTGC",
+        "reverseMT": 60.27
+    },
+    "Pair-2": {
+        "forward": "CGAGATGGAGAAACAGGAGC",
+        "forward_MT": 62.32,
+        "reverse": "CGTAGGAAACCGTGTAGTGC",
+        "reverseMT": 62.32
+    },
+    "Pair-3": {
+        "forward": "CCACAGCATAAAGGCAGTGC",
+        "forward_MT": 62.32,
+        "reverse": "CGACATAAGGGCGACAATCG",
+        "reverseMT": 62.32
+    },
+    "meta_data": {
+        "GC_high": 60,
+        "GC_low": 40,
+        "date": "6-19-2019_9:36",
+        "ortho_limit": 4,
+        "pool_size": 3,
+        "primer_length": 20
+    }
+}
