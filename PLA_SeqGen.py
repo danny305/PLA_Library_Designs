@@ -63,7 +63,7 @@ class PLA_Seq():
             if clamps:
                 test_seq += return_rand_clamp(3)
 
-            if re.search("[G]{4,100}|[C]{4,100}|[A]{4,100}|[T]{4,100}", test_seq):
+            if re.search("[GC]{4,100}|[G]{4,100}|[C]{4,100}|[A]{4,100}|[T]{4,100}", test_seq):
                 #print(f"The sequence: {test_seq} is invalid")
                 continue
 
@@ -200,6 +200,8 @@ class PLA_Seq():
         length = len(seq1) if len(seq1) == len(seq2) else max([len(seq1), len(seq2)])
         match_obj = SequenceMatcher(a=seq1, b=seq2)
         longest_match = match_obj.find_longest_match(0, length, 0, length)
+        if longest_match.size >3:
+            return False
         all_match = match_obj.get_matching_blocks()
         phase_gap = longest_match.b - longest_match.a
 
@@ -227,6 +229,11 @@ class PLA_Seq():
 
         #print("phase match size: ", phase_match_size)
         #print("phase match size: ", phase_match_size_1)
+
+        # if phase_match_size <=limit:
+        #     print(phase_match_size)
+        #     return True
+        # return False
 
         return True if phase_match_size <= limit else False
 
@@ -268,20 +275,20 @@ class PLA_Seq():
 
 
     @staticmethod
-    def genOrthPrimerPairs(length=20, limit=4, GC_low=40, GC_high=60, ret_str=True):
+    def genOrthPrimerPairs(length=20, limit=4, GC_low=40, GC_high=60, ret_str=True, clamps=True):
 
         gen_orthogonal_pair = False
         while not gen_orthogonal_pair:
             forwPrimer, revPrimer = PLA_Seq.certMT_SelfDimerPrimerPairs(
-                length=length, GC_low=GC_low, GC_high=GC_high, ret_str=ret_str)
+                length=length, GC_low=GC_low, GC_high=GC_high, ret_str=ret_str, clamps=clamps)
 
-            if PLA_Seq.OrthogonalityTest(forwPrimer, revPrimer):
+            if PLA_Seq.OrthogonalityTest(forwPrimer, revPrimer, limit):
                 return forwPrimer, revPrimer
 
 
 
     @staticmethod
-    def genOrthoPrimerPairPool(pool_size=4, length=20, *, GC_low=40, GC_high=60, ret_str=True, limit=4):
+    def genOrthoPrimerPairPool(pool_size=4, length=20, *, GC_low=40, GC_high=60, ret_str=True, limit=4, clamps=True):
         """Generate a pool of primer pairs that pass the melt temp criteria defined in
         genCertPrimerPairs(). Default is the 5'extension half-asstemers primers."""
 
@@ -299,11 +306,11 @@ class PLA_Seq():
             primers = dict()
 
             forwPrimer, revPrimer = PLA_Seq.genOrthPrimerPairs(length=length, GC_low=GC_low, GC_high=GC_high,
-                                                               ret_str=ret_str,limit=limit)
+                                                               ret_str=ret_str,limit=limit, clamps=clamps)
 
             if PLA_Seq.poolOrthogonalityTest(pool, forwPrimer, revPrimer, limit):
-                primers['forward'], primers['reverse'] = forwPrimer, revPrimer
-                primers['forward_MT'], primers['reverseMT'] = PLA_Seq.retPrimerPairMT(forwPrimer, revPrimer)
+                primers['Seq_1'], primers['Seq_2'] = forwPrimer, revPrimer
+                primers['Seq_1_MT'], primers['Seq_2_MT'] = PLA_Seq.retPrimerPairMT(forwPrimer, revPrimer)
                 pool[primerKeyName] = primers
                 print(f'Added primer pair {count}')
                 count += 1
@@ -313,7 +320,8 @@ class PLA_Seq():
 
 
 
-    def genOrthoPrimers2Ref(self, pool_size=3, length=20, *, GC_low=40, GC_high=60, ret_str=True, limit=4):
+    def genOrthoPrimers2Ref(self, pool_size=3, length=20, *, GC_low=40, GC_high=60, ret_str=True,
+                            limit=4, filename='OrthoPool_OrthoRef', clamps=True, chk_orth_2_new_seq=True):
 
         if len(self.ref_orth_sequence) == 0:
             return PLA_Seq.genOrthoPrimerPairPool(pool_size=pool_size, length=length,
@@ -322,40 +330,56 @@ class PLA_Seq():
 
         pool = dict()
         count = 1
+        attempt = 0
 
         pool['meta_data'] = {
             'pool_size': pool_size, 'primer_length': length,
             "GC_low": GC_low, "GC_high": GC_high,
             "date": datetime.today().strftime("%-m-%d-%Y_%-H:%-M"),
             "ortho_limit": limit,
-            'reference_sequences': self.ref_orth_sequence
+            'reference_sequences': self.ref_orth_sequence,
+            'seq_ortho_2_each_other': chk_orth_2_new_seq,
+            'seq_ortho_2_ref': True
         }
 
         while len(pool.keys()) <= pool_size:
+            attempt += 1
             primerKeyName = f"Pair-{count}"
             primers = dict()
 
             forwPrimer, revPrimer = PLA_Seq.genOrthPrimerPairs(length=length, GC_low=GC_low, GC_high=GC_high,
-                                                               ret_str=ret_str,limit=limit)
+                                                               ret_str=ret_str,limit=limit, clamps=clamps)
 
             # combos = [tuple(combinations([forwPrimer, revPrimer, ref_seq],2))[1],
             #             for ref_seq in self.ref_orth_sequence]
 
             combos = tuple(product([forwPrimer, revPrimer], self.ref_orth_sequence, repeat=1))
             if not all([PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos]):
-                print('Failed orthogonality to current primers')
+                print(f'{attempt} Failed orthogonality to current primers - forw: {forwPrimer}   rev: {revPrimer}')
                 continue
             print(f'Forw: {forwPrimer} Rev: {revPrimer} are orthogonal to current primers.')
 
 
-            if PLA_Seq.poolOrthogonalityTest(pool, forwPrimer, revPrimer, limit):
-                primers['forward'], primers['reverse'] = forwPrimer, revPrimer
-                primers['forward_MT'], primers['reverseMT'] = PLA_Seq.retPrimerPairMT(forwPrimer, revPrimer)
+
+            if chk_orth_2_new_seq and PLA_Seq.poolOrthogonalityTest(pool, forwPrimer, revPrimer, limit):
+                primers['Seq_1'], primers['Seq_2'] = forwPrimer, revPrimer
+                primers['Seq_1_MT'], primers['Seq_2_MT'] = PLA_Seq.retPrimerPairMT(forwPrimer, revPrimer)
                 pool[primerKeyName] = primers
                 print(f'Added primer pair {count}')
                 self.ortho_pool_ortho_ref = pool
-                self.exportPool2_JSON()
+                self.exportPool2_JSON(filename)
                 count += 1
+
+            else:
+                primers['Seq_1'], primers['Seq_2'] = forwPrimer, revPrimer
+                primers['Seq_1_MT'], primers['Seq_2_MT'] = PLA_Seq.retPrimerPairMT(forwPrimer, revPrimer)
+                pool[primerKeyName] = primers
+                print(f'Added primer pair {count}')
+                self.ortho_pool_ortho_ref = pool
+                self.exportPool2_JSON(filename)
+                count += 1
+
+
 
         self.ortho_pool_ortho_ref = pool
         return pool
@@ -363,10 +387,12 @@ class PLA_Seq():
 
 
     def exportPool2_JSON(self, filename='OrthoPool_OrthoRef'):
-        now = datetime.now().strftime("%m-%d-%y_%H:%M")
-        with open(f"./pla_primer_output/{filename}-{now}.json", 'w+') as f:
+        #now = datetime.now().strftime("%m-%d-%y_%H:%M")
+        now = self.ortho_pool_ortho_ref['meta_data']['date']
+        name = f"./pla_primer_output/{filename}-{now}.json"
+        with open(name, 'w+') as f:
             json.dump(self.ortho_pool_ortho_ref, f, indent=4, sort_keys=True)
-        print('created file')
+        print(f'created file: {name}')
 
 
     @staticmethod
@@ -379,8 +405,8 @@ class PLA_Seq():
             # print([PLA_Seq.OrthogonalityTest(*ppair, limit=4) for ppair in combos])
             # print(all([PLA_Seq.OrthogonalityTest(*ppair, limit=4) for ppair in combos]))
 
-            combos = list(combinations([p_dict['forward'], p_dict['reverse'], forwPrimer], 2))[1:] + \
-                     list(combinations([p_dict['forward'], p_dict['reverse'], revPrimer], 2))[1:]
+            combos = list(combinations([p_dict['Seq_1'], p_dict['Seq_2'], forwPrimer], 2))[1:] + \
+                     list(combinations([p_dict['Seq_1'], p_dict['Seq_2'], revPrimer], 2))[1:]
 
             if not all([PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos]):
                 return False
@@ -423,6 +449,15 @@ class PLA_Seq():
         return splint_oligo_complement.reverse_complement()
 
 
+    @staticmethod
+    def retComplementStrand(strand):
+        if isinstance(strand, str):
+            strand = Seq(strand, generic_dna)
+        elif not isinstance(strand, Seq):
+            raise TypeError('strand argument must be either a str or Seq type.')
+
+        return strand.reverse_complement()
+
 
 
 
@@ -437,9 +472,41 @@ def main():
 
     #print(PLA_Seq.genOrthoPrimerPairPool(3))
     #print(PLA_Seq.genOrthPrimerPairs())
-    obj = PLA_Seq(['GGTGTAAAGTCCACTCTACC', 'GCTCAGACCAATGGAGATGC',
-                   'CCAGTCAGTAGTAACGCTGC', 'GGTCAGTGTTGGATACGAGC'])
-    obj.genOrthoPrimers2Ref()
+
+    # Generate orthogonal sequence to current primers being used in lab
+    # obj = PLA_Seq(['GGTGTAAAGTCCACTCTACC', 'GCTCAGACCAATGGAGATGC',
+    #                'CCAGTCAGTAGTAACGCTGC', 'GGTCAGTGTTGGATACGAGC'])
+    # obj.genOrthoPrimers2Ref()
+
+
+    # Generate orthogonal sequence for middle regions to new primers being purchased
+    # obj = PLA_Seq(['CGAGATGGAGAAACAGGAGC', 'CGAAGTAGGGATTAGTGTGC',
+    #                'CCAGTCTACGAGTCTTGTCC', 'GCTAACAGGCACGCAGTTGC'])
+    # obj.genOrthoPrimers2Ref(filename='NewPrimers_ortho_IntraSeq', clamps=False)
+
+    # Generate orthogonal 3E forw primer
+    obj = PLA_Seq([#'GGTGTAAAGTCCACTCTACC', 'GGTCAGTGTTGGATACGAGC',
+                   'CCAGTCAGTAGTAACGCTGC',  'GCTCAGACCAATGGAGATGC',
+                   'CGAAGTAGGGATTAGTGTGC', 'TGTCAGTGGTTCAGTCAGCA',
+                   'GGACAAGACTCGTAGACTGG', 'CCAGTCTACGAGTCTTGTCC',
+                   'GCTAACAGGCACGCAGTTGC', 'AGTAAGTGAGCAGTGGGTTG'])
+    obj.genOrthoPrimers2Ref(filename='3E_ortho_forwPrimer', clamps=True,
+                            chk_orth_2_new_seq=False, limit=5)
+
+    # Generate orthogonal 5E rev primer
+    # obj = PLA_Seq(['GGTGTAAAGTCCACTCTACC', 'GCTCAGACCAATGGAGATGC',
+    #                'CCAGTCAGTAGTAACGCTGC', 'GGTCAGTGTTGGATACGAGC',
+    #                'GCTCCTGTTTCTCCATCTCG', 'CGAGATGGAGAAACAGGAGC',
+    #                'CGAAGTAGGGATTAGTGTGC', 'TGTCAGTGGTTCAGTCAGCA',
+    #                'GGACAAGACTCGTAGACTGG', 'CCAGTCTACGAGTCTTGTCC',
+    #                'AGTAAGTGAGCAGTGGGTTG'
+    #                ])
+    # obj.genOrthoPrimers2Ref(filename='3E_ortho_forwPrimer', clamps=True,
+    #                         chk_orth_2_new_seq = False)
+
+
+
+
 
 
 
@@ -453,6 +520,7 @@ def main():
 
 #print(PLA_Seq.genPrimerPairs())
 
-main()
+if __name__=="__main__":
+    main()
 
 
