@@ -163,6 +163,22 @@ class PLA_Seq():
 
 
     @staticmethod
+    def evalSeqMT(seq, ret_mt=False):
+        seq_MT = round(MT.Tm_GC(seq, Na=50, Mg=3, dNTPs=0.8), 2)
+
+        if seq_MT < 65.0 and seq_MT > 59.0:
+            if ret_mt == False:
+                return True
+            else:
+                return seq_MT
+        else:
+            # print("MT for the primer pairs did not meet standards\n")
+            return False
+
+
+
+
+    @staticmethod
     def retPrimerPairMT(fprimer, rprimer):
         forwMT, revMT = [round(temp, 2)
                             for temp in PLA_Seq.evalPrimerPairMT(fprimer, rprimer, ret_mt=True)]
@@ -183,6 +199,21 @@ class PLA_Seq():
                 chk_primer_mt = PLA_Seq.evalPrimerPairMT(fprimer, rprimer)
 
         return (fprimer, rprimer) if ret_str == False else (str(fprimer), str(rprimer))
+
+
+
+
+    @staticmethod
+    def genCertMT_SelfDimerSeq(length=20, *, GC_low=40, GC_high=60, clamps=True, ret_str=True):
+
+        chk_primer_mt = False
+        while not chk_primer_mt:
+            seq1 = PLA_Seq.GenOligoGC(length, GC_low, GC_high, clamps)
+
+            if PLA_Seq.selfDimerizeTest(seq1):
+                chk_primer_mt = PLA_Seq.evalSeqMT(seq1)
+
+        return seq1 if ret_str == False else str(seq1)
 
 
 
@@ -386,6 +417,106 @@ class PLA_Seq():
 
 
 
+    def genOrthoSeqPool2Ref(self, pool_size=3, length=20, *, GC_low=40, GC_high=60, ret_str=True,
+                            limit=6, filename='OrthoPool_OrthoRef', clamps=True, chk_orth_2_new_seq=True):
+
+        if len(self.ref_orth_sequence) == 0:
+            raise ValueError("Missing reference sequences to compare new sequences to.")
+
+        pool = dict()
+        count = 1
+        attempt = 0
+
+        pool['meta_data'] = {
+            'pool_size': pool_size, 'primer_length': length,
+            "GC_low": GC_low, "GC_high": GC_high,
+            "date": datetime.today().strftime("%-m-%d-%Y_%-H:%-M"),
+            "ortho_limit": limit,
+            'reference_sequences': self.ref_orth_sequence,
+            'seq_ortho_2_each_other': chk_orth_2_new_seq,
+            'seq_ortho_2_ref': True
+        }
+
+        while len(pool.keys()) <= pool_size:
+            attempt += 1
+            keyName = f"Ortho-Seq-{count}"
+            sequence = dict()
+
+            seq1 = PLA_Seq.genCertMT_SelfDimerSeq(length=length, GC_low=GC_low, GC_high=GC_high,
+                                                               ret_str=ret_str, clamps=clamps)
+
+            seq2 = PLA_Seq.genCertMT_SelfDimerSeq(length=length, GC_low=GC_low, GC_high=GC_high,
+                                                  ret_str=ret_str, clamps=clamps)
+
+            # combos = [tuple(combinations([forwPrimer, revPrimer, ref_seq],2))[1],
+            #             for ref_seq in self.ref_orth_sequence]
+
+            combos1 = tuple(product([seq1], self.ref_orth_sequence, repeat=1))
+            combos2 = tuple(product([seq2], self.ref_orth_sequence, repeat=1))
+
+
+            if all([PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos1]):
+                if chk_orth_2_new_seq and PLA_Seq.poolOrthogonalityTest(pool, seq1, limit):
+                    sequence['Seq_1'] = seq1
+                    sequence['Seq_1_MT'] = PLA_Seq.evalSeqMT(seq1, ret_mt=True)
+                    pool[keyName] = sequence
+                    print(f'Seq1: {seq1} is orthogonal to current sequence.')
+                    self.ortho_pool_ortho_ref = pool
+                    self.exportPool2_JSON(filename)
+                    print(f'Added sequence: {count}')
+                    count += 1
+
+
+                else:
+                    sequence['Seq_1']  = seq1
+                    sequence['Seq_1_MT'] = PLA_Seq.evalSeqMT(seq1, ret_mt=True)
+                    pool[keyName] = sequence
+                    print(f'Seq1: {seq1} is orthogonal to current sequence.')
+                    self.ortho_pool_ortho_ref = pool
+                    self.exportPool2_JSON(filename)
+                    print(f'Added sequence: {count}')
+                    count += 1
+            else:
+                pass
+                #print('Combos 1: ', [PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos1])
+
+
+
+
+            if all([PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos2]):
+                if chk_orth_2_new_seq and PLA_Seq.poolOrthogonalityTest(pool, seq2, limit):
+                    sequence['Seq_1'] = seq2
+                    _, sequence['Seq_2_MT'] = PLA_Seq.evalSeqMT(seq2, ret_mt=True)
+                    pool[keyName] = sequence
+                    print(f'Seq2: {seq2} is orthogonal to current sequence.')
+                    self.ortho_pool_ortho_ref = pool
+                    self.exportPool2_JSON(filename)
+                    print(f'Added sequence: {count}')
+                    count += 1
+                    continue
+
+                else:
+                    sequence['Seq_2']  = seq2
+                    sequence['Seq_2_MT'] = PLA_Seq.evalSeqMT(seq2, ret_mt=True)
+                    pool[keyName] = sequence
+                    print(f'Seq2: {seq2} is orthogonal to current sequence.')
+                    self.ortho_pool_ortho_ref = pool
+                    self.exportPool2_JSON(filename)
+                    print(f'Added sequence: {count}')
+                    count += 1
+                    continue
+            else:
+                pass
+                #print('Combos 2: ', [PLA_Seq.OrthogonalityTest(*ppair, limit=limit) for ppair in combos1])
+
+
+            print(f'{attempt} Failed orthogonality to current sequences - Seq1: {seq1}   Seq2: {seq2}')
+
+        self.ortho_pool_ortho_ref = pool
+        return pool
+
+
+
     def exportPool2_JSON(self, filename='OrthoPool_OrthoRef'):
         #now = datetime.now().strftime("%m-%d-%y_%H:%M")
         now = self.ortho_pool_ortho_ref['meta_data']['date']
@@ -424,29 +555,22 @@ class PLA_Seq():
 
 
     @staticmethod
-    def genSplintSeq(filename, *, splint_len=20):
-        chosen_3_pairs = ['Pair_2']
-        chosen_5_pairs = ['Pair_1']
-        chosen_primers = list()
-        with open(filename, 'r') as f:
-            file = json.load(f)
+    def genSplintSeq(seq_3E, seq_5E, length=[12,16,20]):
 
-        half_splint_len = splint_len // 2
-        splint_oligo_complement = ''
-        for dic in file.values():
-            if dic['extension'] == '3_prime':
-                oligo_4_splint = dic['sequence'][-half_splint_len:]
-                splint_oligo_complement = oligo_4_splint + splint_oligo_complement
 
-            elif dic['extension'] == '5_prime':
-                oligo_4_splint = dic['sequence'][:half_splint_len]
-                splint_oligo_complement += oligo_4_splint
-        splint_oligo_complement = Seq(splint_oligo_complement)
-        print("Sequence:", splint_oligo_complement,
-              "\nCompliment:", splint_oligo_complement.complement(),
-              "\nReverse Compliment:", splint_oligo_complement.reverse_complement(), end='\n\n')
+        return [(splint_len, PLA_Seq.retComplementStrand(seq_3E[-1*(splint_len//2):] + seq_5E[:splint_len//2]))
+                    for splint_len in length]
 
-        return splint_oligo_complement.reverse_complement()
+
+        # print(f'3E sequence: {seq_3E}')
+        # print(f'5E sequence: {seq_5E}')
+        # for splint_len in length:
+        #     splint_template = seq_3E[-1*(splint_len//2):] + seq_5E[:splint_len//2]
+        #     splint_seq = PLA_Seq.retComplementStrand(splint_template)
+        #
+        #     print(f"Splint Template: {splint_template} length: {len(splint_template)}" )
+        #     print(f'Splint Sequence: {splint_seq} length: {len(splint_seq)}')
+
 
 
     @staticmethod
@@ -484,14 +608,23 @@ def main():
     #                'CCAGTCTACGAGTCTTGTCC', 'GCTAACAGGCACGCAGTTGC'])
     # obj.genOrthoPrimers2Ref(filename='NewPrimers_ortho_IntraSeq', clamps=False)
 
+
+
     # Generate orthogonal 3E forw primer
-    obj = PLA_Seq([#'GGTGTAAAGTCCACTCTACC', 'GGTCAGTGTTGGATACGAGC',
-                   'CCAGTCAGTAGTAACGCTGC',  'GCTCAGACCAATGGAGATGC',
-                   'CGAAGTAGGGATTAGTGTGC', 'TGTCAGTGGTTCAGTCAGCA',
-                   'GGACAAGACTCGTAGACTGG', 'CCAGTCTACGAGTCTTGTCC',
-                   'GCTAACAGGCACGCAGTTGC', 'AGTAAGTGAGCAGTGGGTTG'])
-    obj.genOrthoPrimers2Ref(filename='3E_ortho_forwPrimer', clamps=True,
-                            chk_orth_2_new_seq=False, limit=5)
+    # obj = PLA_Seq([#'GGTGTAAAGTCCACTCTACC', 'GGTCAGTGTTGGATACGAGC',
+    #                'CCAGTCAGTAGTAACGCTGC',  'GCTCAGACCAATGGAGATGC',
+    #                'CGAAGTAGGGATTAGTGTGC', 'TGTCAGTGGTTCAGTCAGCA',
+    #                'GGACAAGACTCGTAGACTGG', 'CCAGTCTACGAGTCTTGTCC',
+    #                'GCTAACAGGCACGCAGTTGC', 'AGTAAGTGAGCAGTGGGTTG'])
+    # obj.genOrthoSeqPool2Ref(pool_size=8,filename='3E_ortho_forwPrimer', clamps=True,
+    #                         chk_orth_2_new_seq=False, limit=5)
+
+
+
+    # obj = PLA_Seq([  # 'GGTGTAAAGTCCACTCTACC', 'GGTCAGTGTTGGATACGAGC',
+    #     'CCAGTCAGTAGTAACGCTGC', 'GCTCAGACCAATGGAGATGC',])
+    # obj.genOrthoSeqPool2Ref(filename='3E_ortho_forwPrimer', clamps=True,
+    #                     chk_orth_2_new_seq=False, limit=5)
 
     # Generate orthogonal 5E rev primer
     # obj = PLA_Seq(['GGTGTAAAGTCCACTCTACC', 'GCTCAGACCAATGGAGATGC',
@@ -503,6 +636,10 @@ def main():
     #                ])
     # obj.genOrthoPrimers2Ref(filename='3E_ortho_forwPrimer', clamps=True,
     #                         chk_orth_2_new_seq = False)
+
+
+
+    print(PLA_Seq.genSplintSeq('GCTTTCTCTGATACCTGACG','GCTAACAGGCACGCAGTTGC'))
 
 
 
